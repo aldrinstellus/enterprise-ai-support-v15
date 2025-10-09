@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       original_query: cleanEmailContent(
         isThread ? payload.content || '' : payload.firstThread?.content || ''
       ),
-      customer_email: isThread ? payload.author?.email || '' : payload.contact?.email || '',
+      customer_email: isThread ? payload.author?.email || '' : payload.email || payload.contact?.email || '',
       vendor_email: isThread ? payload.to || '' : payload.firstThread?.to || '',
       channel: payload.channel,
       ticketNumber: payload.ticketNumber,
@@ -205,14 +205,18 @@ export async function POST(req: NextRequest) {
       timestamp: new Date().toISOString(),
     });
 
-    const replyResponse = await zohoClient.sendReply(ticketId, {
-      contentType: 'plainText',
+    const replyPayload = {
+      contentType: 'plainText' as const,
       content: aiResponse.text,
-      fromEmailAddress: extractedInfo.vendor_email,
+      fromEmailAddress: 'support@atcaisupport.zohodesk.com',
       to: extractedInfo.customer_email,
       isForward: false,
-      channel: payload.channel,
-    });
+      channel: 'EMAIL' as const,
+    };
+
+    console.log('[Processing] Sending reply to Zoho:', { ticketId, from: replyPayload.fromEmailAddress, to: replyPayload.to, contentLength: replyPayload.content.length });
+
+    const replyResponse = await zohoClient.sendReply(ticketId, replyPayload);
 
     timeline[timeline.length - 1].status = 'completed';
     timeline[timeline.length - 1].duration = 500;

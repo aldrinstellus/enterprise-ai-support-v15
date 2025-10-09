@@ -16,24 +16,41 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     // Parse webhook payload
-    const body: ZohoWebhookRequest = await req.json();
+    const rawBody = await req.json();
 
-    console.log('[Zoho Webhook] Received event:', {
-      eventType: body.body[0]?.eventType,
-      ticketId: body.body[0]?.payload?.ticketId || body.body[0]?.payload?.id,
-      channel: body.body[0]?.payload?.channel,
-    });
+    console.log('[Zoho Webhook] Raw payload type:', Array.isArray(rawBody) ? 'array' : 'object');
 
-    // Validate webhook has required data
-    if (!body.body || body.body.length === 0) {
+    // Handle different Zoho payload formats
+    let events: Array<{ eventType: string; payload: any; orgId: string; eventTime: string }>;
+
+    if (Array.isArray(rawBody)) {
+      // Direct array format (most common)
+      events = rawBody;
+    } else if (rawBody.body && Array.isArray(rawBody.body)) {
+      // Wrapped format
+      events = rawBody.body;
+    } else {
+      // Single event format - wrap it
+      events = [rawBody];
+    }
+
+    if (events.length === 0) {
       return NextResponse.json(
-        { error: 'Invalid webhook payload: missing body' },
+        { error: 'Invalid webhook payload: no events' },
         { status: 400 }
       );
     }
 
-    const event = body.body[0];
+    const event = events[0];
     const { eventType, payload } = event;
+
+    console.log('[Zoho Webhook] Received event:', {
+      eventType,
+      ticketId: payload?.id,
+      ticketNumber: payload?.ticketNumber,
+      channel: payload?.channel,
+      subject: payload?.subject,
+    });
 
     // Filter: Only process EMAIL channel
     if (payload.channel !== 'EMAIL' && payload.channel !== 'Email') {
@@ -61,7 +78,10 @@ export async function POST(req: NextRequest) {
 
     // In a production system, you would queue this for background processing
     // For now, we'll trigger processing inline (with timeout protection)
-    const processingUrl = new URL('/api/zoho/process-ticket', req.url);
+    const baseUrl = req.headers.get('host')?.includes('localhost')
+      ? 'http://localhost:3011'
+      : `https://${req.headers.get('host')}`;
+    const processingUrl = new URL('/api/zoho/process-ticket', baseUrl);
     const processingReq = await fetch(processingUrl, {
       method: 'POST',
       headers: {

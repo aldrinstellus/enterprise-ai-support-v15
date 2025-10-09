@@ -162,12 +162,12 @@ export interface ZohoThreadResponse {
 export interface ZohoSendReplyRequest {
   contentType: 'plainText' | 'html';
   content: string;
-  fromEmailAddress: string;
+  fromEmailAddress: string; // Required - must be a valid Zoho Desk email
   to: string;
   cc?: string;
   bcc?: string;
   isForward?: boolean;
-  channel: ZohoChannel;
+  channel: ZohoChannel; // Required - typically 'EMAIL' for email replies
 }
 
 // Send Reply Response
