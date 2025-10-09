@@ -134,6 +134,10 @@ model Ticket {
   aiSuggestions   String[]
   sentiment       String?       // positive, negative, neutral
   aiResolved      Boolean       @default(false)
+  aiProcessed     Boolean       @default(false)
+  aiClassification String?      // Ticket category from AI
+  aiResponse      String?       @db.Text // AI-generated response
+  aiConfidence    Float?        // AI classification confidence score
 
   // External Integration
   jiraIssueKey    String?

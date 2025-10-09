@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { prisma } from '@/lib/prisma';
 import { getZohoDeskClient } from '@/lib/integrations/zoho-desk';
 import { smartKBSearch } from '@/lib/integrations/dify';
 import { getJiraClient } from '@/lib/integrations/jira';
@@ -221,7 +222,77 @@ export async function POST(req: NextRequest) {
     timeline[timeline.length - 1].status = 'completed';
     timeline[timeline.length - 1].duration = 500;
 
-    // Step 9: Check if Jira escalation needed
+    // Step 9: Save to database
+    timeline.push({
+      step: 'save_to_database',
+      status: 'in_progress',
+      timestamp: new Date().toISOString(),
+    });
+
+    try {
+      // Upsert customer
+      const customer = await prisma.customer.upsert({
+        where: { email: extractedInfo.customer_email },
+        update: {
+          lastContact: new Date(),
+          updatedAt: new Date()
+        },
+        create: {
+          email: extractedInfo.customer_email,
+          name: payload.contact?.lastName || extractedInfo.customer_email.split('@')[0],
+          tier: 'STANDARD',
+          lastContact: new Date(),
+        },
+      });
+
+      // Map Zoho priority to Prisma enum
+      const priorityMap: Record<string, 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'> = {
+        'High': 'HIGH',
+        'Medium': 'MEDIUM',
+        'Low': 'LOW',
+        'Critical': 'CRITICAL',
+      };
+      const mappedPriority = priorityMap[payload.priority] || 'MEDIUM';
+
+      // Upsert ticket with AI data
+      await prisma.ticket.upsert({
+        where: { ticketNumber: payload.ticketNumber },
+        update: {
+          aiProcessed: true,
+          aiClassification: classification.primary_category,
+          aiResponse: aiResponse.text,
+          aiConfidence: classification.confidence,
+          status: 'OPEN',
+          updatedAt: new Date(),
+        },
+        create: {
+          ticketNumber: payload.ticketNumber,
+          subject: extractedInfo.subject,
+          description: extractedInfo.original_query,
+          status: 'OPEN',
+          priority: mappedPriority,
+          customerId: customer.id,
+          zohoDeskId: ticketId,
+          category: payload.category,
+          aiProcessed: true,
+          aiClassification: classification.primary_category,
+          aiResponse: aiResponse.text,
+          aiConfidence: classification.confidence,
+        },
+      });
+
+      console.log(`[Processing] Saved ticket ${payload.ticketNumber} to database`);
+
+      timeline[timeline.length - 1].status = 'completed';
+      timeline[timeline.length - 1].duration = 300;
+    } catch (dbError) {
+      console.error('[Processing] Database save error:', dbError);
+      timeline[timeline.length - 1].status = 'failed';
+      timeline[timeline.length - 1].duration = 100;
+      // Continue processing even if DB save fails
+    }
+
+    // Step 10: Check if Jira escalation needed
     timeline.push({
       step: 'check_escalation',
       status: 'in_progress',
