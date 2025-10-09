@@ -137,11 +137,15 @@ All configured in `.env.local`:
 ### Webhook URL
 **For Zoho Desk Configuration**:
 ```
-Production: https://enterprise-ai-support-v12.vercel.app/api/zoho/webhook
+Production: https://enterprise-ai-support-v12-odbcyc7vw-aldos-projects-8cf34b67.vercel.app/api/zoho/webhook
 Local Test: https://iona-khakilike-violet.ngrok-free.dev/api/zoho/webhook
 ```
 
 Update in: Zoho Desk → Setup → Automation → Webhooks
+
+**Vercel Deployment**:
+- Inspect: https://vercel.com/aldos-projects-8cf34b67/enterprise-ai-support-v12/Dz8Ae74zWCH7NSbtUEa4bcbEKpdV
+- Production: https://enterprise-ai-support-v12-odbcyc7vw-aldos-projects-8cf34b67.vercel.app
 
 ---
 

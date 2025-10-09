@@ -221,6 +221,95 @@ export function detectEscalationSignals(content: string): {
 }
 
 /**
+ * Detect if a follow-up message indicates the previous solution didn't work
+ * Used to trigger automatic escalation to human agent
+ */
+export function detectFailedResolution(threads: ThreadMessage[]): {
+  needsHumanEscalation: boolean;
+  reason: string;
+  signals: string[];
+} {
+  // Need at least 2 messages to detect a follow-up
+  if (!threads || threads.length < 2) {
+    return {
+      needsHumanEscalation: false,
+      reason: 'No conversation history',
+      signals: [],
+    };
+  }
+
+  // Phrases indicating customer is still having issues
+  const failureSignals = [
+    'still unable',
+    "still can't",
+    "still cannot",
+    'not working',
+    "didn't work",
+    "doesn't work",
+    'still having',
+    'still experiencing',
+    'same issue',
+    'same problem',
+    'tried that',
+    'already tried',
+    "it's not",
+    'no luck',
+    "that won't work",
+    "that doesn't help",
+    'still broken',
+    'still not',
+    'continues to',
+    "i'm still",
+  ];
+
+  // Get the most recent 3 messages
+  const recentMessages = threads.slice(0, 3);
+
+  // Check if there was a previous agent/system response
+  const hasAgentResponse = recentMessages.some(
+    msg => msg.authorType === 'AGENT' || msg.authorType === 'SYSTEM'
+  );
+
+  if (!hasAgentResponse) {
+    return {
+      needsHumanEscalation: false,
+      reason: 'No previous agent response to fail',
+      signals: [],
+    };
+  }
+
+  // Check the latest message for failure signals
+  const latestMessage = recentMessages[0];
+  if (!latestMessage || latestMessage.authorType !== 'CUSTOMER') {
+    return {
+      needsHumanEscalation: false,
+      reason: 'Latest message not from customer',
+      signals: [],
+    };
+  }
+
+  const lowerContent = latestMessage.content.toLowerCase();
+  const foundSignals: string[] = [];
+
+  for (const phrase of failureSignals) {
+    if (lowerContent.includes(phrase)) {
+      foundSignals.push(phrase);
+    }
+  }
+
+  // If we found failure signals in a follow-up after an agent response, escalate
+  const needsEscalation = foundSignals.length > 0;
+
+  return {
+    needsHumanEscalation: needsEscalation,
+    reason: needsEscalation
+      ? 'Customer indicates previous solution did not resolve the issue'
+      : 'No failure signals detected',
+    signals: foundSignals,
+  };
+}
+
+/**
  * Calculate conversation metrics
  */
 export function calculateMetrics(aggregated: AggregatedConversation): {

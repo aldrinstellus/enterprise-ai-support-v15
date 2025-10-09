@@ -139,6 +139,12 @@ model Ticket {
   aiResponse      String?       @db.Text // AI-generated response
   aiConfidence    Float?        // AI classification confidence score
 
+  // Workflow System (Multi-scenario support)
+  workflowScenario String?      // password_reset, account_unlock, access_request, etc.
+  aiVerificationStatus String?  // pending, verified, failed
+  systemActionsTaken Json?      // Log of automated actions performed
+  requiresHumanEscalation Boolean @default(false)
+
   // External Integration
   jiraIssueKey    String?
   zohoDeskId      String?

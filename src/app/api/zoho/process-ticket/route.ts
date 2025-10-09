@@ -9,8 +9,11 @@ import { prisma } from '@/lib/prisma';
 import { getZohoDeskClient } from '@/lib/integrations/zoho-desk';
 import { smartKBSearch } from '@/lib/integrations/dify';
 import { getJiraClient } from '@/lib/integrations/jira';
-import { aggregateConversation, detectEscalationSignals, consolidateForAI } from '@/lib/conversation-aggregator';
+import { aggregateConversation, detectEscalationSignals, consolidateForAI, detectFailedResolution } from '@/lib/conversation-aggregator';
 import { cleanEmailContent } from '@/lib/email-cleaner';
+import { getPasswordResetTemplate, getAgentAssignmentTemplate, isPasswordResetIntent } from '@/lib/response-templates';
+import { getAvailableAgent, assignTicketToAgent, logAgentAssignment } from '@/lib/agent-assignment';
+import { detectWorkflowScenario, processWorkflowScenario, updateTicketWithWorkflowData } from '@/lib/workflow-engine';
 import type { TicketProcessingResult, TicketClassification, TicketCategory, ProcessingStep } from '@/types/ticket';
 import type { ZohoEventType, ZohoTicketPayload } from '@/types/zoho';
 import { TICKET_CATEGORIES } from '@/types/ticket';
@@ -53,16 +56,28 @@ export async function POST(req: NextRequest) {
     });
 
     const isThread = eventType === 'Ticket_Thread_Add';
+
+    // For thread events, we need to fetch the ticket details to get ticketNumber and subject
+    let ticketDetails = null;
+    if (isThread && !payload.ticketNumber) {
+      try {
+        ticketDetails = await zohoClient.getTicket(ticketId);
+        console.log(`[Processing] Fetched ticket details for thread: ticketNumber=${ticketDetails.ticketNumber}, subject="${ticketDetails.subject}"`);
+      } catch (error) {
+        console.error('[Processing] Failed to fetch ticket details:', error);
+      }
+    }
+
     const extractedInfo = {
       ticket_id: ticketId,
-      subject: payload.subject || '',
+      subject: payload.subject || ticketDetails?.subject || '',
       original_query: cleanEmailContent(
         isThread ? payload.content || '' : payload.firstThread?.content || ''
       ),
       customer_email: isThread ? payload.author?.email || '' : payload.email || payload.contact?.email || '',
       vendor_email: isThread ? payload.to || '' : payload.firstThread?.to || '',
       channel: payload.channel,
-      ticketNumber: payload.ticketNumber,
+      ticketNumber: payload.ticketNumber || ticketDetails?.ticketNumber || '',
     };
 
     timeline[timeline.length - 1].status = 'completed';
@@ -88,6 +103,12 @@ export async function POST(req: NextRequest) {
         channel: conv.channel,
       }));
 
+    console.log(`[Processing] Retrieved ${threads.length} threads from conversations`);
+    console.log(`[Processing] Thread summary:`, threads.map(t => ({
+      authorType: t.authorType,
+      contentPreview: t.content.substring(0, 100)
+    })));
+
     timeline[timeline.length - 1].status = 'completed';
     timeline[timeline.length - 1].duration = 200;
 
@@ -99,6 +120,401 @@ export async function POST(req: NextRequest) {
     });
 
     console.log(`[Processing] Optimized query: ${optimizedQuery}`);
+
+    // Step 3.5: Check for password reset intent
+    const isPasswordReset = isPasswordResetIntent(extractedInfo.subject, extractedInfo.original_query);
+
+    if (isPasswordReset && !isThread) {
+      // Initial password reset request - send template response
+      timeline.push({
+        step: 'send_password_reset_template',
+        status: 'in_progress',
+        timestamp: new Date().toISOString(),
+      });
+
+      const customerName = payload.contact?.lastName || payload.contact?.firstName;
+      const passwordResetResponse = getPasswordResetTemplate(customerName);
+
+      const replyPayload = {
+        contentType: 'html' as const,
+        content: passwordResetResponse.htmlContent,
+        fromEmailAddress: 'support@atcaisupport.zohodesk.com',
+        to: extractedInfo.customer_email,
+        isForward: false,
+        channel: 'EMAIL' as const,
+      };
+
+      console.log('[Processing] Sending password reset template');
+
+      const replyResponse = await zohoClient.sendReply(ticketId, replyPayload);
+
+      timeline[timeline.length - 1].status = 'completed';
+      timeline[timeline.length - 1].duration = 500;
+
+      // Save to database
+      timeline.push({
+        step: 'save_to_database',
+        status: 'in_progress',
+        timestamp: new Date().toISOString(),
+      });
+
+      try {
+        const customer = await prisma.customer.upsert({
+          where: { email: extractedInfo.customer_email },
+          update: {
+            lastContact: new Date(),
+            updatedAt: new Date()
+          },
+          create: {
+            email: extractedInfo.customer_email,
+            name: customerName || extractedInfo.customer_email.split('@')[0],
+            tier: 'STANDARD',
+            lastContact: new Date(),
+          },
+        });
+
+        const priorityMap: Record<string, 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'> = {
+          'High': 'HIGH',
+          'Medium': 'MEDIUM',
+          'Low': 'LOW',
+          'Critical': 'CRITICAL',
+        };
+        const mappedPriority = priorityMap[payload.priority] || 'MEDIUM';
+
+        await prisma.ticket.upsert({
+          where: { ticketNumber: payload.ticketNumber },
+          update: {
+            aiProcessed: true,
+            aiClassification: 'SIMPLE_RESPONSE',
+            aiResponse: passwordResetResponse.plainTextFallback,
+            aiConfidence: 0.95,
+            status: 'OPEN',
+            updatedAt: new Date(),
+          },
+          create: {
+            ticketNumber: payload.ticketNumber,
+            subject: extractedInfo.subject,
+            description: extractedInfo.original_query,
+            status: 'OPEN',
+            priority: mappedPriority,
+            customerId: customer.id,
+            zohoDeskId: ticketId,
+            aiProcessed: true,
+            aiClassification: 'SIMPLE_RESPONSE',
+            aiResponse: passwordResetResponse.plainTextFallback,
+            aiConfidence: 0.95,
+          },
+        });
+
+        console.log(`[Processing] Saved password reset ticket ${payload.ticketNumber} to database`);
+
+        timeline[timeline.length - 1].status = 'completed';
+        timeline[timeline.length - 1].duration = 300;
+      } catch (dbError) {
+        console.error('[Processing] Database save error:', dbError);
+        timeline[timeline.length - 1].status = 'failed';
+        timeline[timeline.length - 1].duration = 100;
+      }
+
+      const result: TicketProcessingResult = {
+        ticketId,
+        ticketNumber: payload.ticketNumber,
+        status: 'completed',
+        classification: {
+          primary_category: 'SIMPLE_RESPONSE',
+          secondary_categories: [],
+          confidence: 0.95,
+          reasoning: 'Password reset request detected',
+          required_info: [],
+          estimated_complexity: 'low',
+          auto_resolvable: true,
+        },
+        aiResponse: {
+          text: passwordResetResponse.plainTextFallback,
+          confidence: 0.95,
+          needsEscalation: false,
+          escalationSignals: [],
+        },
+        zohoReply: {
+          id: replyResponse.id,
+          sent: true,
+          timestamp: replyResponse.createdTime,
+        },
+        timeline,
+        startTime,
+        endTime: new Date().toISOString(),
+        totalDuration: Date.now() - new Date(startTime).getTime(),
+      };
+
+      console.log(`[Processing] Completed password reset ticket ${ticketId} in ${result.totalDuration}ms`);
+
+      return NextResponse.json(result);
+    }
+
+    // Step 3.6: DEMO - Simple follow-up detection for password reset tickets
+    console.log(`[Processing] Follow-up check: isThread=${isThread}, subject="${extractedInfo.subject}"`);
+
+    // For demo: If it's a follow-up (thread) on a password-related ticket, assign to agent
+    const isPasswordRelatedThread = isThread && isPasswordResetIntent(extractedInfo.subject, extractedInfo.original_query);
+
+    if (isPasswordRelatedThread) {
+      console.log(`[Processing] DEMO: Password-related follow-up detected - assigning to agent`);
+
+      // Simple escalation for demo
+      const demoEscalation = {
+        needsHumanEscalation: true,
+        reason: 'Follow-up on password reset issue - demo escalation',
+        signals: ['follow-up detected'],
+      };
+
+      if (demoEscalation.needsHumanEscalation) {
+        console.log(`[Processing] Follow-up detected: ${demoEscalation.reason}`);
+
+        // Assign to human agent
+        timeline.push({
+          step: 'assign_to_human_agent',
+          status: 'in_progress',
+          timestamp: new Date().toISOString(),
+        });
+
+        const availableAgent = await getAvailableAgent();
+
+        if (availableAgent) {
+          const assigned = await assignTicketToAgent(extractedInfo.ticketNumber, availableAgent.id);
+
+          if (assigned) {
+            // Log the assignment
+            const ticket = await prisma.ticket.findUnique({
+              where: { ticketNumber: extractedInfo.ticketNumber },
+            });
+
+            if (ticket) {
+              await logAgentAssignment(ticket.id, availableAgent.id, demoEscalation.reason);
+            }
+
+            // Send agent assignment notification
+            const customerName = payload.contact?.lastName || payload.contact?.firstName || ticketDetails?.contact?.lastName;
+            const agentNotification = getAgentAssignmentTemplate(
+              customerName,
+              availableAgent.name,
+              extractedInfo.ticketNumber
+            );
+
+            const replyPayload = {
+              contentType: 'html' as const,
+              content: agentNotification.htmlContent,
+              fromEmailAddress: 'support@atcaisupport.zohodesk.com',
+              to: extractedInfo.customer_email,
+              isForward: false,
+              channel: 'EMAIL' as const,
+            };
+
+            console.log(`[Processing] Sending agent assignment notification for ${availableAgent.name}`);
+
+            const replyResponse = await zohoClient.sendReply(ticketId, replyPayload);
+
+            timeline[timeline.length - 1].status = 'completed';
+            timeline[timeline.length - 1].duration = 800;
+
+            // Update database with assignment
+            timeline.push({
+              step: 'update_database_assignment',
+              status: 'in_progress',
+              timestamp: new Date().toISOString(),
+            });
+
+            try {
+              await prisma.ticket.update({
+                where: { ticketNumber: extractedInfo.ticketNumber },
+                data: {
+                  status: 'IN_PROGRESS',
+                  assigneeId: availableAgent.id,
+                  updatedAt: new Date(),
+                },
+              });
+
+              console.log(`[Processing] Updated ticket ${extractedInfo.ticketNumber} with agent assignment`);
+
+              timeline[timeline.length - 1].status = 'completed';
+              timeline[timeline.length - 1].duration = 200;
+            } catch (dbError) {
+              console.error('[Processing] Database update error:', dbError);
+              timeline[timeline.length - 1].status = 'failed';
+              timeline[timeline.length - 1].duration = 100;
+            }
+
+            const result: TicketProcessingResult = {
+              ticketId,
+              ticketNumber: extractedInfo.ticketNumber,
+              status: 'completed',
+              classification: {
+                primary_category: 'ESCALATION_NEEDED',
+                secondary_categories: [],
+                confidence: 0.95,
+                reasoning: demoEscalation.reason,
+                required_info: [],
+                estimated_complexity: 'high',
+                auto_resolvable: false,
+              },
+              aiResponse: {
+                text: agentNotification.plainTextFallback,
+                confidence: 0.95,
+                needsEscalation: true,
+                escalationSignals: demoEscalation.signals,
+              },
+              zohoReply: {
+                id: replyResponse.id,
+                sent: true,
+                timestamp: replyResponse.createdTime,
+              },
+              timeline,
+              startTime,
+              endTime: new Date().toISOString(),
+              totalDuration: Date.now() - new Date(startTime).getTime(),
+            };
+
+            console.log(`[Processing] Completed agent assignment for ticket ${ticketId} in ${result.totalDuration}ms`);
+
+            return NextResponse.json(result);
+          }
+        } else {
+          console.warn('[Processing] No available agents for assignment');
+        }
+      }
+    }
+
+    // ========================================
+    // Step 3.7: NEW MULTI-SCENARIO WORKFLOW ENGINE
+    // ========================================
+    // This runs ONLY if NOT password reset
+    // Handles: account unlock, access request, general support, email notifications, printer issues, course completion
+    console.log('[Processing] Checking for workflow scenarios (non-password)...');
+
+    if (!isPasswordReset && !isPasswordRelatedThread) {
+      try {
+        const workflowContext = {
+          ticketId,
+          ticketNumber: extractedInfo.ticketNumber,
+          subject: extractedInfo.subject,
+          content: extractedInfo.original_query,
+          customerEmail: extractedInfo.customer_email,
+          customerName: payload.contact?.lastName || payload.contact?.firstName,
+          isThread,
+        };
+
+        const detectedScenario = detectWorkflowScenario(workflowContext);
+
+        if (detectedScenario) {
+          console.log(`[Processing] ✅ Detected workflow scenario: ${detectedScenario}`);
+
+          timeline.push({
+            step: `process_${detectedScenario}_workflow`,
+            status: 'in_progress',
+            timestamp: new Date().toISOString(),
+          });
+
+          const workflowResult = await processWorkflowScenario(detectedScenario, workflowContext);
+
+          if (workflowResult && workflowResult.handled) {
+            console.log(`[Processing] Workflow handled: aiResolved=${workflowResult.aiResolved}, requiresHuman=${workflowResult.requiresHuman}`);
+
+            timeline[timeline.length - 1].status = 'completed';
+            timeline[timeline.length - 1].duration = 1000;
+
+            // Send email response
+            if (workflowResult.response) {
+              timeline.push({
+                step: 'send_workflow_response',
+                status: 'in_progress',
+                timestamp: new Date().toISOString(),
+              });
+
+              const replyPayload = {
+                contentType: 'html' as const,
+                content: workflowResult.response.htmlContent,
+                fromEmailAddress: 'support@atcaisupport.zohodesk.com',
+                to: extractedInfo.customer_email,
+                isForward: false,
+                channel: 'EMAIL' as const,
+              };
+
+              const replyResponse = await zohoClient.sendReply(ticketId, replyPayload);
+
+              timeline[timeline.length - 1].status = 'completed';
+              timeline[timeline.length - 1].duration = 500;
+
+              // Update database with workflow metadata
+              timeline.push({
+                step: 'update_database_workflow',
+                status: 'in_progress',
+                timestamp: new Date().toISOString(),
+              });
+
+              try {
+                await updateTicketWithWorkflowData(
+                  extractedInfo.ticketNumber,
+                  detectedScenario,
+                  workflowResult.aiResolved,
+                  workflowResult.systemActions,
+                  workflowResult.verificationResults
+                );
+
+                timeline[timeline.length - 1].status = 'completed';
+                timeline[timeline.length - 1].duration = 200;
+              } catch (dbError) {
+                console.error('[Processing] Workflow database update error:', dbError);
+                timeline[timeline.length - 1].status = 'failed';
+                timeline[timeline.length - 1].duration = 100;
+              }
+
+              // Return workflow result
+              const result: TicketProcessingResult = {
+                ticketId,
+                ticketNumber: extractedInfo.ticketNumber,
+                status: 'completed',
+                classification: {
+                  primary_category: workflowResult.aiResolved ? 'SIMPLE_RESPONSE' : 'ESCALATION_NEEDED',
+                  secondary_categories: [],
+                  confidence: 0.95,
+                  reasoning: `Workflow scenario: ${detectedScenario}`,
+                  required_info: [],
+                  estimated_complexity: workflowResult.requiresHuman ? 'high' : 'low',
+                  auto_resolvable: workflowResult.aiResolved,
+                },
+                aiResponse: {
+                  text: workflowResult.response.plainTextFallback,
+                  confidence: 0.95,
+                  needsEscalation: workflowResult.requiresHuman,
+                  escalationSignals: workflowResult.requiresHuman ? ['workflow_escalation'] : [],
+                },
+                zohoReply: {
+                  id: replyResponse.id,
+                  sent: true,
+                  timestamp: replyResponse.createdTime,
+                },
+                timeline,
+                startTime,
+                endTime: new Date().toISOString(),
+                totalDuration: Date.now() - new Date(startTime).getTime(),
+              };
+
+              console.log(`[Processing] ✅ Completed ${detectedScenario} workflow in ${result.totalDuration}ms`);
+
+              return NextResponse.json(result);
+            }
+          } else {
+            console.log('[Processing] Workflow not handled, falling back to Claude AI');
+            timeline[timeline.length - 1].status = 'skipped';
+            timeline[timeline.length - 1].duration = 100;
+          }
+        } else {
+          console.log('[Processing] No workflow scenario detected, proceeding to Claude AI');
+        }
+      } catch (workflowError) {
+        console.error('[Processing] Workflow engine error (falling back to Claude AI):', workflowError);
+        // Graceful fallback - continue to Claude AI processing
+      }
+    }
 
     // Step 4: Classify ticket
     timeline.push({
@@ -156,13 +572,13 @@ export async function POST(req: NextRequest) {
         ticketNumber: payload.ticketNumber,
         status: 'completed',
         classification,
-        jiraTicket: {
+        jiraTicket: jiraTicket ? {
           key: jiraTicket.key,
           id: jiraTicket.id,
           url: jiraTicket.self,
           summary: `[REPORT] - ${extractedInfo.subject}`,
           created: new Date().toISOString(),
-        },
+        } : undefined,
         timeline,
         startTime,
         endTime: new Date().toISOString(),
@@ -256,7 +672,7 @@ export async function POST(req: NextRequest) {
 
       // Upsert ticket with AI data
       await prisma.ticket.upsert({
-        where: { ticketNumber: payload.ticketNumber },
+        where: { ticketNumber: extractedInfo.ticketNumber },
         update: {
           aiProcessed: true,
           aiClassification: classification.primary_category,
@@ -266,7 +682,7 @@ export async function POST(req: NextRequest) {
           updatedAt: new Date(),
         },
         create: {
-          ticketNumber: payload.ticketNumber,
+          ticketNumber: extractedInfo.ticketNumber,
           subject: extractedInfo.subject,
           description: extractedInfo.original_query,
           status: 'OPEN',
@@ -281,7 +697,7 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      console.log(`[Processing] Saved ticket ${payload.ticketNumber} to database`);
+      console.log(`[Processing] Saved ticket ${extractedInfo.ticketNumber} to database`);
 
       timeline[timeline.length - 1].status = 'completed';
       timeline[timeline.length - 1].duration = 300;
