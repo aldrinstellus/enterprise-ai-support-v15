@@ -58,10 +58,11 @@ export async function POST(req: NextRequest) {
     const isThread = eventType === 'Ticket_Thread_Add';
 
     // For thread events, we need to fetch the ticket details to get ticketNumber and subject
-    let ticketDetails = null;
+    let ticketDetails: { ticketNumber: string; subject: string; contact?: { lastName?: string; firstName?: string } } | null = null;
     if (isThread && !payload.ticketNumber) {
       try {
-        ticketDetails = await zohoClient.getTicket(ticketId);
+        const details = await zohoClient.getTicket(ticketId);
+        ticketDetails = details as { ticketNumber: string; subject: string; contact?: { lastName?: string; firstName?: string } };
         console.log(`[Processing] Fetched ticket details for thread: ticketNumber=${ticketDetails.ticketNumber}, subject="${ticketDetails.subject}"`);
       } catch (error) {
         console.error('[Processing] Failed to fetch ticket details:', error);

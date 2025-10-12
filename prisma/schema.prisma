@@ -111,7 +111,7 @@ enum CustomerTier {
 // Ticket Management System
 model Ticket {
   id              String        @id @default(cuid())
-  ticketNumber    String        @unique
+  ticketNumber    String        @unique @map("ticketnumber") // Maps to existing lowercase column
   subject         String
   description     String        @db.Text
   priority        TicketPriority @default(MEDIUM)

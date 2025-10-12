@@ -1,10 +1,12 @@
 /**
- * API Route: Fetch Real Zoho Desk Tickets
+ * API Route: Fetch Tickets from Supabase Database
  * Provides ticket data formatted for dashboard consumption
+ * NO JOINS - Uses only the tickets table as per requirement
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getZohoDeskClient } from '@/lib/integrations/zoho-desk';
+import { prisma } from '@/lib/prisma';
+import { TicketPriority, TicketStatus } from '@prisma/client';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -13,7 +15,7 @@ interface DashboardTicket {
   id: string;
   ticketNumber: string;
   summary: string;
-  priority: 'High' | 'Medium' | 'Low';
+  priority: 'High' | 'Medium' | 'Low' | 'Critical';
   status: string;
   assignedAgent: string | null;
   reporter: string;
@@ -28,53 +30,57 @@ interface DashboardTicket {
 
 /**
  * GET /api/tickets
- * Fetch recent tickets from Zoho Desk
+ * Fetch recent tickets from Supabase database (tickets table only - NO JOINS)
  */
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get('limit') || '50');
-    const status = searchParams.get('status'); // Open, In Progress, Closed
-    const channel = searchParams.get('channel'); // EMAIL, Phone, Web
+    const statusFilter = searchParams.get('status'); // Open, In Progress, Closed
 
-    const zohoClient = getZohoDeskClient();
+    // Build Prisma query - NO JOINS, only tickets table
+    const whereClause: any = {};
 
-    // Build Zoho API query
-    let apiUrl = `/api/v1/tickets?limit=${limit}&sortBy=-createdTime`;
-
-    if (status) {
-      apiUrl += `&status=${status}`;
+    if (statusFilter) {
+      // Map URL status to TicketStatus enum
+      const statusMap: { [key: string]: TicketStatus } = {
+        'Open': TicketStatus.OPEN,
+        'In Progress': TicketStatus.IN_PROGRESS,
+        'Closed': TicketStatus.CLOSED,
+        'Resolved': TicketStatus.RESOLVED,
+        'Pending': TicketStatus.PENDING,
+        'Escalated': TicketStatus.ESCALATED,
+      };
+      whereClause.status = statusMap[statusFilter] || TicketStatus.OPEN;
     }
 
-    // Fetch tickets from Zoho
-    const response = await zohoClient.request<{ data: any[] }>(apiUrl);
-    const zohoTickets = response.data || [];
+    // Fetch tickets from Supabase (NO JOINS - tickets table only)
+    const tickets = await prisma.ticket.findMany({
+      where: whereClause,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: limit,
+    });
 
-    // Transform Zoho tickets to dashboard format
-    const dashboardTickets: DashboardTicket[] = zohoTickets
-      .filter(ticket => {
-        // Filter by channel if specified
-        if (channel && ticket.channel !== channel) {
-          return false;
-        }
-        return true;
-      })
-      .map(ticket => ({
-        id: ticket.id,
-        ticketNumber: ticket.ticketNumber,
-        summary: ticket.subject || 'No subject',
-        priority: mapPriority(ticket.priority),
-        status: ticket.status || 'Open',
-        assignedAgent: ticket.assignee?.name || null,
-        reporter: ticket.contact?.lastName || ticket.contact?.firstName || 'Unknown',
-        reporterEmail: ticket.contact?.email || '',
-        createdDate: ticket.createdTime,
-        lastUpdated: ticket.modifiedTime || ticket.createdTime,
-        category: ticket.category?.name || null,
-        channel: ticket.channel || 'Unknown',
-        aiProcessed: false, // We'll enhance this later
-        aiClassification: null,
-      }));
+    // Transform database tickets to dashboard format
+    // NO JOINS - reporter/assignee will be IDs only (as per user requirement)
+    const dashboardTickets: DashboardTicket[] = tickets.map(ticket => ({
+      id: ticket.id,
+      ticketNumber: ticket.ticketNumber,
+      summary: ticket.subject,
+      priority: mapPrismaPriority(ticket.priority),
+      status: mapPrismaStatus(ticket.status),
+      assignedAgent: ticket.assigneeId || null, // ID only (no join to User table)
+      reporter: ticket.customerId, // ID only (no join to Customer table)
+      reporterEmail: 'N/A', // Not available without join to Customer table
+      createdDate: ticket.createdAt.toISOString(),
+      lastUpdated: ticket.updatedAt.toISOString(),
+      category: ticket.category,
+      channel: 'EMAIL', // Hardcoded as we only process EMAIL channel
+      aiProcessed: ticket.aiProcessed,
+      aiClassification: ticket.aiClassification,
+    }));
 
     return NextResponse.json({
       success: true,
@@ -97,16 +103,40 @@ export async function GET(req: NextRequest) {
 }
 
 /**
- * Map Zoho priority to standard format
+ * Map Prisma TicketPriority enum to dashboard format
  */
-function mapPriority(zohoPriority: string): 'High' | 'Medium' | 'Low' {
-  const priority = (zohoPriority || '').toLowerCase();
-
-  if (priority === 'high' || priority === 'urgent') {
-    return 'High';
-  } else if (priority === 'low') {
-    return 'Low';
+function mapPrismaPriority(priority: TicketPriority): 'High' | 'Medium' | 'Low' | 'Critical' {
+  switch (priority) {
+    case TicketPriority.CRITICAL:
+      return 'Critical';
+    case TicketPriority.HIGH:
+      return 'High';
+    case TicketPriority.LOW:
+      return 'Low';
+    case TicketPriority.MEDIUM:
+    default:
+      return 'Medium';
   }
+}
 
-  return 'Medium';
+/**
+ * Map Prisma TicketStatus enum to dashboard format
+ */
+function mapPrismaStatus(status: TicketStatus): string {
+  switch (status) {
+    case TicketStatus.OPEN:
+      return 'Open';
+    case TicketStatus.IN_PROGRESS:
+      return 'In Progress';
+    case TicketStatus.PENDING:
+      return 'Pending';
+    case TicketStatus.RESOLVED:
+      return 'Resolved';
+    case TicketStatus.CLOSED:
+      return 'Closed';
+    case TicketStatus.ESCALATED:
+      return 'Escalated';
+    default:
+      return 'Open';
+  }
 }

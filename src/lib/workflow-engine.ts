@@ -247,15 +247,20 @@ export async function updateTicketWithWorkflowData(
   verificationResults?: VerificationResult[]
 ): Promise<void> {
   try {
+    const updateData: any = {
+      workflowScenario: scenario,
+      aiResolved,
+      aiVerificationStatus: verificationResults?.[0]?.status || null,
+      updatedAt: new Date(),
+    };
+
+    if (systemActions) {
+      updateData.systemActionsTaken = { actions: systemActions };
+    }
+
     await prisma.ticket.update({
       where: { ticketNumber },
-      data: {
-        workflowScenario: scenario,
-        aiResolved,
-        aiVerificationStatus: verificationResults?.[0]?.status || null,
-        systemActionsTaken: systemActions ? { actions: systemActions } : null,
-        updatedAt: new Date(),
-      },
+      data: updateData,
     });
     console.log(`[Workflow Engine] Updated ticket ${ticketNumber} with workflow data`);
   } catch (error) {
