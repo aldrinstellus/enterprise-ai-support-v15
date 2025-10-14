@@ -122,8 +122,8 @@ Executive Summary • Analytics Dashboard • Performance Trends • Sentiment A
 | Code Quality | 20/20 | ✅ 9 ESLint warnings (88% reduction) |
 | **TOTAL** | **116/120** | **100%** 🎉 |
 
-**Production URL**: https://enterprise-ai-support-v12.vercel.app
-**Health Check**: https://enterprise-ai-support-v12.vercel.app/api/health
+**Production URL**: https://enterprise-ai-support-v14.vercel.app
+**Health Check**: https://enterprise-ai-support-v14.vercel.app/api/health
 
 ---
 

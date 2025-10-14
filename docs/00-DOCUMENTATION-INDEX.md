@@ -231,9 +231,9 @@ Start here in order:
 
 ## 🔗 External Resources
 
-- **Production URL**: https://enterprise-ai-support-v12.vercel.app
-- **Health Check**: https://enterprise-ai-support-v12.vercel.app/api/health
-- **GitHub Repository**: (Add your repo URL)
+- **Production URL**: https://enterprise-ai-support-v14.vercel.app
+- **Health Check**: https://enterprise-ai-support-v14.vercel.app/api/health
+- **GitHub Repository**: https://github.com/aldrinstellus/enterprise-ai-support-v14
 - **Next.js Documentation**: https://nextjs.org/docs
 - **Prisma Documentation**: https://www.prisma.io/docs
 - **Anthropic Claude**: https://docs.anthropic.com
