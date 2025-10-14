@@ -1,9 +1,5 @@
 import {
-  Users,
-  Activity,
   AlertTriangle,
-  TrendingUp,
-  CheckCircle2,
 } from 'lucide-react';
 import type { TeamWorkloadDashboardData } from '@/types/widget';
 

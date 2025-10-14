@@ -1,5 +1,4 @@
 import {
-  AlertCircle,
   TrendingUp,
   TrendingDown,
   Activity,

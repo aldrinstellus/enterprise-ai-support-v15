@@ -9,7 +9,6 @@ import {
   Phone,
   DollarSign,
   Tag,
-  Calendar,
   Activity,
   GitBranch,
   TrendingUp,

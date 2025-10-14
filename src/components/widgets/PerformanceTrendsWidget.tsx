@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 import {
   LineChart,
   Line,

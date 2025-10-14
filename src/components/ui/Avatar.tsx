@@ -12,7 +12,7 @@ interface AvatarProps {
 
 export function Avatar({
   name,
-  initials = 'SC',
+  initials: _initials = 'SC', // eslint-disable-line @typescript-eslint/no-unused-vars
   size = 40,
   className = '',
   variant = 'profile'

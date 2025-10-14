@@ -1,7 +1,6 @@
 import {
   AlertCircle,
   TrendingUp,
-  TrendingDown,
   DollarSign,
   Calendar,
   AlertTriangle,

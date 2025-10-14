@@ -1,13 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Plus, ChevronDown, Check, Pin, ChevronRight } from 'lucide-react';
+import { Plus, ChevronDown, Check, Pin, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Avatar } from '@/components/ui/Avatar';
 import { usePersona } from '@/hooks/use-persona';
 import { getDashboardWidgets } from '@/config/dashboard-widgets';
-import { WidgetRenderer } from '@/components/widgets/WidgetRenderer';
-import { getWidgetDemoData } from '@/data/demo-widget-data';
 
 interface WorkspaceSidebarProps {
   isOpen?: boolean;
@@ -19,7 +17,7 @@ interface WorkspaceSidebarProps {
 
 export function WorkspaceSidebar({
   isOpen = true,
-  onToggle,
+  onToggle: _onToggle, // eslint-disable-line @typescript-eslint/no-unused-vars
   onNewConversation,
   onResetData,
   onWidgetClick,

@@ -13,7 +13,8 @@ import type { NextRequest } from 'next/server';
  * This middleware runs on all routes except static files and API routes
  * that need specific configurations.
  */
-export function middleware(request: NextRequest) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function middleware(_request: NextRequest) {
   // Create response
   const response = NextResponse.next();
 

@@ -1,12 +1,11 @@
 // CS Manager Conversation Patterns
 // Multi-turn conversation flows for CS Manager persona
 
-import type { WidgetType, WidgetData } from '@/types/widget';
+import type { WidgetData } from '@/types/widget';
 import {
   meetingSchedulerDemo,
   teamWorkloadDashboardDemo,
   customerRiskListDemo,
-  ticketDetailDemo,
 } from '@/data/demo-widget-data';
 
 export interface ConversationEntry {

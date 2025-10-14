@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React from 'react';
 import { WorkspaceSidebar } from '../concepts/WorkspaceSidebar';
 import { InteractiveChat } from './InteractiveChat';
 import { useSidebar } from '@/contexts/SidebarContext';

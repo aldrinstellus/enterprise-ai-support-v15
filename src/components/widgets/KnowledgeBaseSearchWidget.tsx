@@ -37,7 +37,7 @@ export function KnowledgeBaseSearchWidget({ data }: { data: KnowledgeBaseSearchD
           Top Results
         </h5>
 
-        {data.topResults.map((article, index) => (
+        {data.topResults.map((article, _index) => ( // eslint-disable-line @typescript-eslint/no-unused-vars
           <div
             key={article.id}
             className="glass-card rounded-lg border border-border bg-card/70 p-4 hover:border-primary/50 hover:bg-card/90 transition-all cursor-pointer"

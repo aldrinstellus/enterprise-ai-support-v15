@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { X, Minimize2, Maximize2, GripHorizontal } from 'lucide-react';
 import { WidgetRenderer } from '../widgets/WidgetRenderer';
 import { DashboardWidget } from '@/config/dashboard-widgets';
-import { WidgetType, WidgetData } from '@/types/widget';
+import { WidgetData } from '@/types/widget';
 
 interface DraggableWidgetProps {
   widget: DashboardWidget;

@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, X } from 'lucide-react';
 import { DashboardWidget } from '@/config/dashboard-widgets';
-import { getWidgetDemoData } from '@/data/demo-widget-data';
 
 interface WidgetTrayProps {
   widgets: DashboardWidget[];

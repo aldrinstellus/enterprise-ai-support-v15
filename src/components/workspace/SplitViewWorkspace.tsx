@@ -11,7 +11,8 @@ import { getDashboardWidgets, DashboardWidget } from '@/config/dashboard-widgets
 
 export function SplitViewWorkspace() {
   const { currentPersona } = usePersona();
-  const { sidebarOpen } = useSidebar();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { sidebarOpen: _sidebarOpen } = useSidebar();
   const [chatWidth, setChatWidth] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('split-view-chat-width');

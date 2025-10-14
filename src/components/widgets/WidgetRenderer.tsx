@@ -11,7 +11,6 @@ import type {
   AgentDashboardData,
   TicketDetailData,
   LiveTicketDetailData,
-  TicketListData,
   AgentPerformanceComparisonData,
   CustomerRiskListData,
   MeetingSchedulerData,
@@ -33,7 +32,6 @@ import { AnalyticsDashboardWidget } from './AnalyticsDashboardWidget';
 import { PerformanceTrendsWidget } from './PerformanceTrendsWidget';
 import { SentimentAnalysisWidget } from './SentimentAnalysisWidget';
 import { CustomerRiskProfileWidget } from './CustomerRiskProfileWidget';
-import { TicketListWidget } from './TicketListWidget';
 import { LiveTicketListWidget } from './LiveTicketListWidget';
 import { LiveTicketDetailWidget } from './LiveTicketDetailWidget';
 import { AgentDashboardWidget } from './AgentDashboardWidget';

@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, PanelRightOpen, PanelRightClose, Pin, PinOff, LayoutDashboard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InteractiveChat, type InteractiveChatRef } from '../chat/InteractiveChat';
-import { WidgetRenderer } from '../widgets/WidgetRenderer';
 import { usePersona } from '@/hooks/use-persona';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { getDashboardWidgets, DashboardWidget } from '@/config/dashboard-widgets';
@@ -29,7 +28,8 @@ import {
 } from '@/data/demo-widget-data';
 import type { WidgetType, WidgetData } from '@/types/widget';
 
-const widgetDataMap: Partial<Record<WidgetType, WidgetData>> = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _widgetDataMap: Partial<Record<WidgetType, WidgetData>> = {
   'executive-summary': executiveSummaryDemo,
   'customer-risk-profile': customerRiskProfileDemo,
   'customer-risk-list': customerRiskListDemo,
@@ -54,7 +54,8 @@ const widgetDataMap: Partial<Record<WidgetType, WidgetData>> = {
 
 export function SmartWorkspace() {
   const { currentPersona } = usePersona();
-  const { sidebarOpen } = useSidebar();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { sidebarOpen: _sidebarOpen } = useSidebar();
   const [dashboardOpen, setDashboardOpen] = useState(true);
   const [pinnedWidgets, setPinnedWidgets] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');

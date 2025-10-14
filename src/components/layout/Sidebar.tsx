@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { User, Plus, TrendingUp, AlertTriangle, BarChart3, Target, Users, ChevronDown, Check } from 'lucide-react';
+import { Plus, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Avatar } from '@/components/ui/Avatar';
 import { usePersona } from '@/hooks/use-persona';
@@ -19,12 +18,12 @@ interface SidebarProps {
 
 export function Sidebar({
   isOpen = true,
-  onToggle,
+  onToggle: _onToggle, // eslint-disable-line @typescript-eslint/no-unused-vars
   onQuickAction,
   onNewConversation,
   onResetData,
 }: SidebarProps) {
-  const pathname = usePathname();
+  usePathname();
   const { currentPersona, setPersona, availablePersonas } = usePersona();
   const { messagesByPersona } = useConversation();
   const [personaSelectorOpen, setPersonaSelectorOpen] = useState(false);

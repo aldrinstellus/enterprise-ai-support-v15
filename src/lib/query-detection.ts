@@ -6,9 +6,6 @@ import { findBestMatch as findCLevelMatch } from './c-level-conversation';
 import { findBestMatch as findCSManagerMatch } from './cs-manager-conversation';
 import {
   executiveSummaryDemo,
-  analyticsDashboardDemo,
-  performanceTrendsDemo,
-  sentimentAnalysisDemo,
   customerRiskProfileDemo,
   ticketDetailDemo,
   slaPerformanceChartDemo,
@@ -30,11 +27,8 @@ import {
   accountUnlockSuccessDemo,
   accountUnlockEscalationDemo,
   multiSystemAccessResolvedDemo,
-  multiSystemAccessPartialDemo,
   profileUpdateSuccessDemo,
-  profileUpdateEscalationDemo,
   courseUpdateSuccessDemo,
-  courseUpdateEscalationDemo,
 } from '@/data/demo-widget-data';
 
 export interface QueryMatch {

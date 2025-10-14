@@ -11,12 +11,6 @@ import {
 import type { SLAPerformanceChartData } from '@/types/widget';
 
 export function SLAPerformanceChartWidget({ data }: { data: SLAPerformanceChartData }) {
-  const statusColors = {
-    success: 'border-success/30 bg-success/10 text-success',
-    warning: 'border-chart-4/30 bg-chart-4/10 text-chart-4',
-    error: 'border-destructive/30 bg-destructive/10 text-destructive',
-  };
-
   const trendIcons = {
     improving: TrendingUp,
     stable: Minus,
@@ -69,7 +63,6 @@ export function SLAPerformanceChartWidget({ data }: { data: SLAPerformanceChartD
         <div className="space-y-3">
           {data.byCategory.map((category, idx) => {
             const TrendIcon = trendIcons[category.trend];
-            const isGood = category.compliance >= 90;
             const isWarning = category.compliance >= 75 && category.compliance < 90;
             const isCritical = category.compliance < 75;
 

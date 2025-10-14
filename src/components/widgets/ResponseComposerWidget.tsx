@@ -25,12 +25,6 @@ export function ResponseComposerWidget({ data, onAction }: { data: ResponseCompo
     apologetic: 'bg-chart-4/20 text-chart-4',
   };
 
-  const sentimentColors = {
-    positive: 'text-success',
-    neutral: 'text-muted-foreground',
-    negative: 'text-destructive',
-  };
-
   return (
     <div className="space-y-6 my-4">
       {/* Header */}

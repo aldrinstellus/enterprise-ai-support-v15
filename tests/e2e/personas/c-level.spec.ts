@@ -1,10 +1,8 @@
 import { test, expect, Page } from '@playwright/test';
 import { navigateToPersona, clearBrowserState } from '../helpers/persona-helper';
 import {
-  waitForWidget,
   assertWidgetVisible,
   assertWidgetContainsText,
-  assertAIResponseContains,
 } from '../helpers/widget-assertions';
 import { sendQuery, executeConversationFlow } from '../helpers/multi-step-helper';
 

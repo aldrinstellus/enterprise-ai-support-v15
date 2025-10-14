@@ -1,5 +1,4 @@
 import {
-  Shield,
   TrendingUp,
   Users,
   Headphones,
@@ -7,7 +6,6 @@ import {
   AlertCircle,
   TrendingDown,
   Users as UsersIcon,
-  AlertTriangle,
   Calendar,
   Activity,
   BarChart3,
@@ -15,17 +13,10 @@ import {
   Zap,
   GitBranch,
   Bell,
-  CheckCircle2,
-  XCircle,
   ArrowUpCircle,
-  Settings,
-  Lock,
-  Eye,
   LayoutDashboard,
   Award,
-  UserCog,
   Ticket,
-
 } from 'lucide-react';
 import { Persona } from '@/types/persona';
 

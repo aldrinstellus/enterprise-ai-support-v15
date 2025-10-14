@@ -135,7 +135,7 @@ export function consolidateForAI(aggregated: AggregatedConversation, options: {
   maxLength?: number;
   focusOnTechnical?: boolean;
 } = {}): string {
-  const { maxLength = 200, focusOnTechnical = true } = options;
+  const { maxLength = 200 } = options;
 
   // Extract latest message without author prefix
   const latestClean = aggregated.latestMessage.replace(/^[A-Z_]+ - /, '');

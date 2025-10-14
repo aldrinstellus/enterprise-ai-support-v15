@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Command, TrendingUp, Users, Headphones, ArrowRight } from 'lucide-react';
+import { Search, Command, ArrowRight } from 'lucide-react';
 import { DashboardWidget } from '@/config/dashboard-widgets';
 
 interface CommandPaletteProps {
