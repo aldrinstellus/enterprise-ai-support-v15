@@ -51,8 +51,19 @@ export function Sidebar({
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         } transition-opacity duration-200`}
       >
+      {/* Version Badge */}
+      <div className="flex-shrink-0 px-4 pt-4 pb-2">
+        <div className="flex items-center justify-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-lg">
+          <div className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs font-bold text-primary tracking-wider">EAS-V14</span>
+          </div>
+          <span className="text-[10px] text-muted-foreground">Production</span>
+        </div>
+      </div>
+
       {/* Fixed Top: New Conversation Button */}
-      <div className="flex-shrink-0 p-4 border-b border-border">
+      <div className="flex-shrink-0 px-4 pb-4 border-b border-border">
         <button
           onClick={onNewConversation}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-muted hover:bg-muted/80 rounded-lg text-sm font-medium text-foreground transition-colors"
