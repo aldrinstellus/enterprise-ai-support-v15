@@ -370,12 +370,40 @@ If you're unsure where documentation should go:
 
 ---
 
+## 🔄 Auto-Sync Features
+
+### Browser Tab Title Auto-Sync
+
+The browser tab title automatically syncs with the version from `package.json`:
+
+**How It Works:**
+- Update `package.json` version → Browser tab updates automatically
+- No manual updates needed in `layout.tsx`
+
+**Version Format Examples:**
+```json
+// package.json: "version": "14.0.0"  → Browser: "Enterprise AI Support V14"
+// package.json: "version": "15.0.0"  → Browser: "Enterprise AI Support V15"
+// package.json: "version": "14.1.0"  → Browser: "Enterprise AI Support V14.1"
+// package.json: "version": "16.2.3"  → Browser: "Enterprise AI Support V16.2.3"
+```
+
+**When Creating New Versions:**
+1. Update `package.json` version
+2. Browser tab title updates automatically ✅
+3. No manual changes needed in layout.tsx ✅
+
+This ensures consistent branding across all versions and branches.
+
+---
+
 ## 🎉 Benefits of This Policy
 
 **For Developers:**
 - Easy to find documentation
 - Clear organization reduces confusion
 - Professional codebase presentation
+- Auto-sync features reduce manual work
 
 **For New Team Members:**
 - Quick onboarding with clear structure
