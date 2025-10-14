@@ -9,7 +9,7 @@ async function testTicketProcessing(ticketId) {
   console.log(`🚀 Testing ticket processing for Ticket ID: ${ticketId}\n`);
 
   try {
-    const response = await fetch('http://localhost:3011/api/zoho/process-ticket', {
+    const response = await fetch('http://localhost:3014/api/zoho/process-ticket', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,5 +66,5 @@ async function testTicketProcessing(ticketId) {
 // Get ticket ID from command line or use default
 const ticketId = process.argv[2] || '106'; // Using your recent ticket
 
-console.log('📝 Make sure your dev server is running on port 3011\n');
+console.log('📝 Make sure your dev server is running on port 3014\n');
 testTicketProcessing(ticketId);

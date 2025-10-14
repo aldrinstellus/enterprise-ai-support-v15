@@ -1,5 +1,5 @@
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║                    ENTERPRISE AI SUPPORT V12                                  ║
+║                    ENTERPRISE AI SUPPORT V14                                  ║
 ║                        WEBHOOK ENDPOINTS                                      ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 
@@ -15,7 +15,7 @@ https://iona-khakilike-violet.ngrok-free.dev/api/zoho/webhook
 
 Purpose: Local testing and development
 Status: ✅ Active
-Server: localhost:3011 via ngrok tunnel
+Server: localhost:3014 via ngrok tunnel
 Note: URL changes on restart (free plan)
 
 Quick Start:
@@ -27,7 +27,7 @@ Quick Start:
 🚀 PRODUCTION (Vercel)
 
 URL:
-https://enterprise-ai-support-v12-c0ibhp1lm-aldos-projects-8cf34b67.vercel.app/api/zoho/webhook
+https://enterprise-ai-support-v14.vercel.app/api/zoho/webhook
 
 Purpose: Live production email processing
 Status: ✅ Ready
@@ -45,7 +45,7 @@ Local:
   curl https://iona-khakilike-violet.ngrok-free.dev/api/zoho/webhook
 
 Production:
-  curl https://enterprise-ai-support-v12-c0ibhp1lm-aldos-projects-8cf34b67.vercel.app/api/zoho/webhook
+  curl https://enterprise-ai-support-v14.vercel.app/api/zoho/webhook
 
 Both should return:
   {"status":"active","message":"Zoho Desk webhook endpoint is ready"}

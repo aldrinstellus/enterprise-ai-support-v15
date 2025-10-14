@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Enterprise AI Support V12 - Development Startup Script
+# Enterprise AI Support V14 - Development Startup Script
 # This script starts both the Next.js dev server and ngrok tunnel
 
-echo "🚀 Starting Enterprise AI Support V12 Development Environment..."
+echo "🚀 Starting Enterprise AI Support V14 Development Environment..."
 echo ""
 
 # Check if ngrok is installed
@@ -19,16 +19,16 @@ if [ ! -f .env.local ]; then
     exit 1
 fi
 
-# Kill any existing processes on port 3011
+# Kill any existing processes on port 3014
 echo "🧹 Cleaning up existing processes..."
-lsof -ti:3011 | xargs kill -9 2>/dev/null || true
+lsof -ti:3014 | xargs kill -9 2>/dev/null || true
 
 # Kill any existing ngrok processes
 pkill -f ngrok 2>/dev/null || true
 sleep 2
 
 echo ""
-echo "✅ Starting Next.js dev server on port 3011..."
+echo "✅ Starting Next.js dev server on port 3014..."
 npm run dev &
 NEXTJS_PID=$!
 
@@ -38,7 +38,7 @@ sleep 5
 
 echo ""
 echo "✅ Starting ngrok tunnel..."
-ngrok http 3011 --log=stdout > /tmp/ngrok.log 2>&1 &
+ngrok http 3014 --log=stdout > /tmp/ngrok.log 2>&1 &
 NGROK_PID=$!
 
 # Wait for ngrok to start
@@ -57,7 +57,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "✅ Development Environment Ready!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "📍 Local Dev Server:    http://localhost:3011"
+echo "📍 Local Dev Server:    http://localhost:3014"
 echo "🌐 Public Webhook URL:  ${NGROK_URL}/api/zoho/webhook"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

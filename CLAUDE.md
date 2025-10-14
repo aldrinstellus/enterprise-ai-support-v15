@@ -269,7 +269,7 @@ NEXT_PUBLIC_WS_URL=ws://localhost:3001
 - **Demo Mode**: The app works fully without API keys using mock data
 - **Claude SDK**: Real AI responses available when `ANTHROPIC_API_KEY` is configured (see CLAUDE-SDK-SETUP.md)
 - **Database**: Prisma schema defined but database connection optional for demo
-- **Port 3011**: Chosen to avoid conflicts with other project versions
+- **Port 3014**: Chosen to avoid conflicts with other project versions
 - **No Backend**: All state managed in localStorage for demo purposes
 - **Turbopack**: Next.js 15 uses Turbopack by default for fast builds (<1s)
 

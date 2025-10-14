@@ -6,7 +6,7 @@ async function triggerProcessing(ticketId) {
   console.log(`\n🚀 Manually triggering AI processing for Ticket #${ticketId}...\n`);
 
   try {
-    const response = await fetch('https://enterprise-ai-support-v11.vercel.app/api/zoho/process-ticket', {
+    const response = await fetch('https://enterprise-ai-support-v14.vercel.app/api/zoho/process-ticket', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

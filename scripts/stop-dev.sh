@@ -2,7 +2,7 @@
 
 # Stop development environment
 
-echo "🛑 Stopping Enterprise AI Support V12 Development Environment..."
+echo "🛑 Stopping Enterprise AI Support V14 Development Environment..."
 
 # Kill Next.js
 if [ -f /tmp/enterprise-ai-nextjs.pid ]; then
@@ -21,7 +21,7 @@ if [ -f /tmp/enterprise-ai-ngrok.pid ]; then
 fi
 
 # Clean up any remaining processes
-lsof -ti:3011 | xargs kill -9 2>/dev/null || true
+lsof -ti:3014 | xargs kill -9 2>/dev/null || true
 pkill -f ngrok 2>/dev/null || true
 
 echo "✅ Development environment stopped"
