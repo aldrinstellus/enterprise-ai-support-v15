@@ -2,6 +2,34 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🔒 DOCUMENTATION POLICY (CRITICAL)
+
+**READ THIS FIRST** - This project follows a **strict SDLC-style documentation policy**:
+
+### Mandatory Documentation Structure
+
+✅ **REQUIRED**: All documentation MUST be organized in `/docs/` using 15 SDLC categories:
+- Only `00-DOCUMENTATION-INDEX.md` at docs root
+- All other docs in numbered folders: `01-getting-started/` through `15-reference/`
+
+✅ **REQUIRED**: All historical/extra files MUST go to `/Aldo/` folder:
+- Previous versions, deprecated docs, working notes → `/Aldo/`
+- Keep `/docs/` root clean and professional
+
+✅ **REQUIRED**: Follow naming convention: `UPPERCASE-WITH-DASHES.md`
+
+✅ **REQUIRED**: Update `docs/00-DOCUMENTATION-INDEX.md` when adding any documentation
+
+**📜 Full Policy**: See [DOCUMENTATION-POLICY.md](./DOCUMENTATION-POLICY.md) for complete standards.
+
+**⚠️ For Claude Code**: When creating or organizing documentation:
+1. ALWAYS use the SDLC structure (15 categories)
+2. ALWAYS move extra/historical files to `/Aldo/`
+3. NEVER create `.md` files outside the structure
+4. ALWAYS update the documentation index
+
+---
+
 ## Project Overview
 
 **Enterprise AI Support V14** - Production-ready AI-powered support dashboard with 7 automated workflows, 19 specialized widgets, multi-persona RBAC system, and comprehensive SDLC documentation. **100/100 Production Score** 🏆

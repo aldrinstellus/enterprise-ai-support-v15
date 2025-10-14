@@ -8,6 +8,11 @@
 
 ## 🎯 Quick Navigation
 
+### **🔒 Documentation Policy**
+**REQUIRED READING**: **[📜 Documentation Policy](../DOCUMENTATION-POLICY.md)** - Official V14 documentation standards
+
+All documentation in this project follows a strict SDLC-style structure. All historical files are preserved in `/Aldo/` folder.
+
 ### **New to the Project?**
 Start here in order:
 1. **[Quick Start Guide](./01-getting-started/QUICK-START.md)** - Get running in 5 minutes
@@ -93,6 +98,7 @@ Start here in order:
 ### 08-development/
 **Developer workflow and standards**
 - **[DEVELOPER-GUIDE.md](./08-development/DEVELOPER-GUIDE.md)** - Complete development guide
+- **[DOCUMENTATION-GUIDE.md](./08-development/DOCUMENTATION-GUIDE.md)** - How to create and maintain documentation
 - **[CODE-STRUCTURE.md](./08-development/CODE-STRUCTURE.md)** - Codebase organization and navigation
 - **[CODING-STANDARDS.md](./08-development/CODING-STANDARDS.md)** - Code style and best practices
 - **[GIT-WORKFLOW.md](./08-development/GIT-WORKFLOW.md)** - Branching strategy and PR process
@@ -239,15 +245,20 @@ Start here in order:
 
 All documentation in this project follows these standards:
 
+- ✅ **SDLC-style structure** - 15 numbered categories (01-15)
+- ✅ **Historical preservation** - All old docs in `/Aldo/` folder
+- ✅ **Naming convention** - `UPPERCASE-WITH-DASHES.md`
 - ✅ **GitHub-flavored Markdown** format
 - ✅ **Clear hierarchy** with H1-H6 headings
 - ✅ **Code examples** with syntax highlighting
 - ✅ **Step-by-step instructions** for all procedures
-- ✅ **Diagrams** (ASCII art or Mermaid) where helpful
 - ✅ **Cross-references** with links to related docs
 - ✅ **Examples** for every concept
 - ✅ **Troubleshooting** sections
 - ✅ **Last updated** dates
+
+**📜 Full Standards**: See [DOCUMENTATION-POLICY.md](../DOCUMENTATION-POLICY.md) for complete policy.
+**📖 How-To Guide**: See [DOCUMENTATION-GUIDE.md](./08-development/DOCUMENTATION-GUIDE.md) for step-by-step instructions.
 
 ---
 
