@@ -226,7 +226,7 @@ export function ResponseComposerWidget({ data, onAction }: { data: ResponseCompo
           <div className="flex items-start gap-2">
             <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0 mt-0.5" />
             <span className="text-sm text-foreground/90">
-              Acknowledge the customer's concern first before providing solutions
+              Acknowledge the customer&apos;s concern first before providing solutions
             </span>
           </div>
           <div className="flex items-start gap-2">

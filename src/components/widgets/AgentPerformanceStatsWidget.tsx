@@ -234,7 +234,7 @@ export function AgentPerformanceStatsWidget({ data }: { data: AgentPerformanceSt
                     ))}
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground italic">"{item.comment}"</p>
+                <p className="text-xs text-muted-foreground italic">&quot;{item.comment}&quot;</p>
                 <p className="text-xs text-muted-foreground mt-1">{item.date}</p>
               </div>
             ))}

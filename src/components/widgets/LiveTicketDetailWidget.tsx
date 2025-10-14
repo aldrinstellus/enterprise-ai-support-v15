@@ -7,8 +7,76 @@ interface LiveTicketDetailProps {
   ticketNumber: string;
 }
 
+// Zoho Desk API Response Types
+interface ZohoAttachment {
+  id: string;
+  name: string;
+  size?: number;
+  href?: string;
+}
+
+interface ZohoConversation {
+  id: string;
+  direction?: string;
+  summary?: string;
+  content?: string;
+  from?: string;
+  to?: string;
+  author?: string;
+  createdTime: string;
+  isPublic?: boolean;
+  attachments?: ZohoAttachment[];
+}
+
+interface ZohoTicketContact {
+  name: string;
+  email: string;
+  phone?: string;
+  id?: string;
+}
+
+interface ZohoTicketAssignee {
+  name: string | null;
+  email: string | null;
+  id: string | null;
+}
+
+interface ZohoTicketSLA {
+  responseDue?: string;
+  resolutionDue?: string;
+  responseOverdue: boolean;
+  resolutionOverdue: boolean;
+}
+
+interface ZohoTicketDetail {
+  id: string;
+  ticketNumber: string;
+  subject: string;
+  description: string;
+  priority: string;
+  status: string;
+  channel: string;
+  contact: ZohoTicketContact;
+  assignee: ZohoTicketAssignee;
+  createdTime: string;
+  modifiedTime: string;
+  closedTime?: string;
+  dueDate?: string;
+  department: string | null;
+  category: string | null;
+  subCategory: string | null;
+  product: string | null;
+  sla: ZohoTicketSLA;
+  conversations: ZohoConversation[];
+  tags: string[];
+  webUrl?: string;
+  commentCount: number;
+  threadCount: number;
+  attachmentCount: number;
+}
+
 export function LiveTicketDetailWidget({ ticketNumber }: LiveTicketDetailProps) {
-  const [ticket, setTicket] = useState<any>(null);
+  const [ticket, setTicket] = useState<ZohoTicketDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,8 +99,9 @@ export function LiveTicketDetailWidget({ ticketNumber }: LiveTicketDetailProps) 
         } else {
           throw new Error(data.error || 'Unknown error');
         }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -272,7 +341,7 @@ export function LiveTicketDetailWidget({ ticketNumber }: LiveTicketDetailProps) 
             Conversation Timeline ({ticket.conversations.length})
           </h5>
           <div className="space-y-4">
-            {ticket.conversations.map((conv: any, idx: number) => (
+            {ticket.conversations.map((conv: ZohoConversation, idx: number) => (
               <div key={idx} className="flex gap-3 pb-4 border-b border-border/50 last:border-0 last:pb-0">
                 <div className="flex-shrink-0 mt-1">
                   <div className={`w-3 h-3 rounded-full ${
@@ -313,7 +382,7 @@ export function LiveTicketDetailWidget({ ticketNumber }: LiveTicketDetailProps) 
                   )}
                   {conv.attachments && conv.attachments.length > 0 && (
                     <div className="mt-2 flex items-center gap-2 flex-wrap">
-                      {conv.attachments.map((att: any, attIdx: number) => (
+                      {conv.attachments.map((att: ZohoAttachment, attIdx: number) => (
                         <a
                           key={attIdx}
                           href={att.href}

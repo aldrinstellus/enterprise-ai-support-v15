@@ -56,7 +56,7 @@ export function TicketProcessingWidget({ data }: { data: TicketProcessingData })
             {' • '}
             Customer: <span className="font-medium text-foreground">{data.customer}</span>
           </div>
-          <div className="text-foreground italic">"{data.subject}"</div>
+          <div className="text-foreground italic">&quot;{data.subject}&quot;</div>
         </div>
       </div>
 
@@ -205,7 +205,7 @@ export function TicketProcessingWidget({ data }: { data: TicketProcessingData })
             </div>
             <div className="pt-3 border-t border-border/50 mt-3">
               <span className="text-xs text-muted-foreground">Query</span>
-              <p className="text-sm text-foreground mt-1 italic">"{data.kbSearch.query}"</p>
+              <p className="text-sm text-foreground mt-1 italic">&quot;{data.kbSearch.query}&quot;</p>
             </div>
           </div>
         </div>
@@ -232,7 +232,7 @@ export function TicketProcessingWidget({ data }: { data: TicketProcessingData })
                       key={idx}
                       className="text-xs px-2 py-1 rounded-full bg-chart-4/20 text-chart-4"
                     >
-                      "{signal}"
+                      &quot;{signal}&quot;
                     </span>
                   ))}
                 </div>

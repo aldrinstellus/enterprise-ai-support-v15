@@ -121,7 +121,7 @@ export function AgentDashboardWidget({ data }: { data: AgentDashboardData }) {
         <div className="glass-card rounded-lg border border-border bg-card/70 p-4 backdrop-blur-md">
           <h4 className="text-sm font-semibold mb-3 flex items-center gap-2 text-foreground">
             <Calendar className="h-4 w-4 text-chart-3" />
-            Today's Meetings
+            Today&apos;s Meetings
           </h4>
           <div className="space-y-3">
             {data.upcomingMeetings.map((meeting, idx) => (

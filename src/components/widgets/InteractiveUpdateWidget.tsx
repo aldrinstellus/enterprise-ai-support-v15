@@ -80,7 +80,7 @@ export function InteractiveUpdateWidget({ data }: { data: InteractiveUpdateData 
             {' • '}
             Customer: <span className="font-medium text-foreground">{data.customer}</span>
           </div>
-          <div className="text-foreground italic">"{data.issueReported}"</div>
+          <div className="text-foreground italic">&quot;{data.issueReported}&quot;</div>
         </div>
       </div>
 
@@ -268,7 +268,7 @@ export function InteractiveUpdateWidget({ data }: { data: InteractiveUpdateData 
             )}
             {data.resolution === 'pending' && (
               <p className="text-sm text-foreground">
-                Awaiting user action. Select the fields you'd like to update above.
+                Awaiting user action. Select the fields you&apos;d like to update above.
               </p>
             )}
           </div>

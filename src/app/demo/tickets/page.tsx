@@ -22,7 +22,7 @@ export default function TicketsDemoPage() {
           <h3 className="font-semibold text-blue-900 mb-2">✨ Demo Features</h3>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• <strong>Live Data:</strong> Fetching real tickets from Zoho Desk API</li>
-            <li>• <strong>Auto-refresh:</strong> Click "Refresh" to get latest tickets</li>
+            <li>• <strong>Auto-refresh:</strong> Click &quot;Refresh&quot; to get latest tickets</li>
             <li>• <strong>All Fields:</strong> Ticket #, Summary, Priority, Status, Assigned Agent, Reporter, Created Date</li>
             <li>• <strong>AI Integration:</strong> Tickets #106 and #107 are from the email test (AI automation ready)</li>
           </ul>

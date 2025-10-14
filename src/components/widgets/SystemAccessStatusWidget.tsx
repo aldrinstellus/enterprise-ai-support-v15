@@ -78,7 +78,7 @@ export function SystemAccessStatusWidget({ data }: { data: SystemAccessStatusDat
             <span>{data.timestamp}</span>
           </div>
           <div className="mt-2 text-foreground">
-            Issue Reported: <span className="italic">"{data.issueReported}"</span>
+            Issue Reported: <span className="italic">&quot;{data.issueReported}&quot;</span>
           </div>
         </div>
       </div>

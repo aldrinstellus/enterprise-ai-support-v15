@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { TicketPriority, TicketStatus } from '@prisma/client';
+import { TicketPriority, TicketStatus, Prisma } from '@prisma/client';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
     const statusFilter = searchParams.get('status'); // Open, In Progress, Closed
 
     // Build Prisma query - NO JOINS, only tickets table
-    const whereClause: any = {};
+    const whereClause: Prisma.TicketWhereInput = {};
 
     if (statusFilter) {
       // Map URL status to TicketStatus enum
@@ -88,13 +88,14 @@ export async function GET(req: NextRequest) {
       tickets: dashboardTickets,
     });
 
-  } catch (error: any) {
-    console.error('[API /tickets] Error:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch tickets';
+    console.error('[API /tickets] Error:', errorMessage);
 
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch tickets',
+        error: errorMessage,
         tickets: [],
       },
       { status: 500 }

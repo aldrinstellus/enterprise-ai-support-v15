@@ -1,12 +1,18 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import type { WidgetType, WidgetData } from '@/types/widget';
 
-interface Message {
+export interface Message {
   id: string;
   type: 'user' | 'ai' | 'widget';
   content?: string;
+  widgetType?: WidgetType;
+  widgetData?: WidgetData;
   timestamp: Date;
+  feedback?: 'like' | 'dislike';
+  userQuery?: string;
+  isTyping?: boolean;
 }
 
 interface ConversationContextType {
@@ -25,16 +31,17 @@ export function ConversationProvider({ children }: { children: ReactNode }) {
       try {
         const saved = localStorage.getItem('messagesByPersona');
         if (saved) {
-          const parsed = JSON.parse(saved);
+          const parsed = JSON.parse(saved) as Record<string, Array<Omit<Message, 'timestamp'> & { timestamp: string }>>;
           // Convert ISO string dates back to Date objects
+          const converted: Record<string, Message[]> = {};
           Object.keys(parsed).forEach(key => {
-            parsed[key] = parsed[key].map((msg: any) => ({
+            converted[key] = parsed[key].map((msg) => ({
               ...msg,
               timestamp: new Date(msg.timestamp),
             }));
           });
-          console.log('[ConversationContext] Loaded messages from localStorage:', parsed);
-          return parsed;
+          console.log('[ConversationContext] Loaded messages from localStorage:', converted);
+          return converted;
         }
       } catch (error) {
         console.error('[ConversationContext] Failed to load messages from localStorage:', error);

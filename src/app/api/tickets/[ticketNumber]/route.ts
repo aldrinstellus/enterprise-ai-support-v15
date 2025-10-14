@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getZohoDeskClient } from '@/lib/integrations/zoho-desk';
+import { ZohoConversation as ImportedZohoConversation } from '@/types/zoho';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -13,6 +14,95 @@ interface RouteContext {
   params: Promise<{
     ticketNumber: string;
   }>;
+}
+
+// Zoho API Response Types
+interface ZohoContact {
+  id?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  mobile?: string;
+}
+
+interface ZohoAssignee {
+  id?: string;
+  name?: string;
+  email?: string;
+}
+
+interface ZohoDepartment {
+  name?: string;
+}
+
+interface ZohoCategory {
+  name?: string;
+}
+
+interface ZohoProduct {
+  productName?: string;
+}
+
+interface ZohoAttachment {
+  id: string;
+  name: string;
+  size?: number;
+  href?: string;
+}
+
+interface ZohoConversation {
+  id: string;
+  direction?: string;
+  summary?: string;
+  content?: string;
+  contentType?: string;
+  from?: string;
+  to?: string;
+  cc?: string[];
+  bcc?: string[];
+  author?: string | { name?: string };
+  createdTime: string;
+  isPublic?: boolean;
+  attachments?: ZohoAttachment[];
+}
+
+interface ZohoTicket {
+  id: string;
+  ticketNumber: string;
+  subject?: string;
+  description?: string;
+  priority?: string;
+  status?: string;
+  channel?: string;
+  contact?: ZohoContact;
+  assignee?: ZohoAssignee;
+  createdTime: string;
+  modifiedTime?: string;
+  closedTime?: string;
+  dueDate?: string;
+  department?: ZohoDepartment;
+  category?: ZohoCategory;
+  subCategory?: string;
+  productId?: ZohoProduct;
+  cf?: Record<string, unknown>;
+  responseDue?: string;
+  resolutionDue?: string;
+  isResponseOverdue?: boolean;
+  isOverDue?: boolean;
+  tags?: string[];
+  webUrl?: string;
+  commentCount?: number;
+  threadCount?: number;
+  attachmentCount?: number;
+}
+
+interface ZohoTicketResponse {
+  data: ZohoTicket[];
+}
+
+interface ZohoConversationsResponse {
+  data: ZohoConversation[];
 }
 
 /**
@@ -37,12 +127,12 @@ export async function GET(
 
     // First, search for the ticket by ticket number
     // Zoho API requires us to get the list and filter by ticketNumber
-    const searchResponse = await zohoClient.request<any>(
+    const searchResponse = await zohoClient.request<ZohoTicketResponse>(
       `/api/v1/tickets?limit=100&sortBy=-createdTime`
     );
 
     // Find the ticket with matching ticketNumber
-    const ticket = searchResponse.data?.find((t: any) => t.ticketNumber === ticketNumber);
+    const ticket = searchResponse.data?.find((t: ZohoTicket) => t.ticketNumber === ticketNumber);
 
     if (!ticket) {
       return NextResponse.json(
@@ -52,12 +142,13 @@ export async function GET(
     }
 
     // Fetch conversations/threads for the ticket
-    let conversations: any[] = [];
+    let conversations: ImportedZohoConversation[] = [];
     try {
       const conversationsResponse = await zohoClient.getConversations(ticket.id);
       conversations = conversationsResponse.data || [];
-    } catch (error: any) {
-      console.warn('[API /tickets/[ticketNumber]] Failed to fetch conversations:', error.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.warn('[API /tickets/[ticketNumber]] Failed to fetch conversations:', errorMessage);
       // Continue without conversations
     }
 
@@ -113,7 +204,7 @@ export async function GET(
       },
 
       // Conversations/Timeline
-      conversations: conversations.map((conv: any) => ({
+      conversations: conversations.map((conv: ImportedZohoConversation) => ({
         id: conv.id,
         direction: conv.direction?.toUpperCase() || 'INTERNAL', // in -> INCOMING, out -> OUTGOING
         summary: conv.summary || '',
@@ -125,8 +216,8 @@ export async function GET(
         bcc: conv.bcc || [],
         author: typeof conv.author === 'string' ? conv.author : conv.author?.name || 'Unknown',
         createdTime: conv.createdTime,
-        isPublic: conv.isPublic !== false,
-        attachments: (conv.attachments || []).map((att: any) => ({
+        isPublic: true,
+        attachments: (conv.attachments || []).map((att: ZohoAttachment) => ({
           id: att.id,
           name: att.name,
           size: att.size,
@@ -149,13 +240,14 @@ export async function GET(
       ticket: detailedTicket,
     });
 
-  } catch (error: any) {
-    console.error('[API /tickets/[ticketNumber]] Error:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch ticket details';
+    console.error('[API /tickets/[ticketNumber]] Error:', errorMessage);
 
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch ticket details',
+        error: errorMessage,
       },
       { status: 500 }
     );
@@ -165,7 +257,7 @@ export async function GET(
 /**
  * Map Zoho priority to standard format
  */
-function mapPriority(zohoPriority: string): 'High' | 'Medium' | 'Low' {
+function mapPriority(zohoPriority: string | undefined): 'High' | 'Medium' | 'Low' {
   const priority = (zohoPriority || '').toLowerCase();
 
   if (priority === 'high' || priority === 'urgent') {

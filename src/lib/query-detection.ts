@@ -78,7 +78,7 @@ function detectCLevelQuery(q: string): QueryMatch | null {
     // Map Bhanu's widget types to our WidgetType
     return {
       widgetType: bhanuMatch.widgetType as WidgetType,
-      widgetData: bhanuMatch.widgetData,
+      widgetData: bhanuMatch.widgetData ?? null,
       responseText: bhanuMatch.aiResponse,
     };
   }
@@ -237,7 +237,7 @@ function detectManagerQuery(q: string): QueryMatch | null {
     // Map conversation entry to QueryMatch
     return {
       widgetType: conversationMatch.widgetType as WidgetType,
-      widgetData: conversationMatch.widgetData as any,
+      widgetData: conversationMatch.widgetData as WidgetData,
       responseText: conversationMatch.aiResponse,
     };
   }
@@ -289,8 +289,8 @@ function detectManagerQuery(q: string): QueryMatch | null {
     console.log('[Query Detection - CS Manager] Extracted ticket number:', ticketNumber);
 
     if (ticketNumber) {
-      const result = {
-        widgetType: 'live-ticket-detail',
+      const result: QueryMatch = {
+        widgetType: 'live-ticket-detail' as WidgetType,
         widgetData: { ticketNumber },
         responseText: `Here are the complete details for ticket #${ticketNumber} from Zoho Desk:`,
       };

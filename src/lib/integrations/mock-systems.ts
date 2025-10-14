@@ -8,7 +8,7 @@
 export interface IntegrationResult {
   success: boolean;
   message: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }
 
 // ========================================

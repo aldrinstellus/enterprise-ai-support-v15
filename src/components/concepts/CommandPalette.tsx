@@ -153,7 +153,7 @@ export function CommandPalette({ isOpen, onClose, widgets, onWidgetClick }: Comm
               ) : (
                 <div className="px-4 py-12 text-center">
                   <p className="text-sm text-muted-foreground">
-                    No widgets found matching "{searchQuery}"
+                    No widgets found matching &quot;{searchQuery}&quot;
                   </p>
                 </div>
               )}

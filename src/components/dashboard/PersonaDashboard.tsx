@@ -54,7 +54,7 @@ export function PersonaDashboard() {
             <p className="text-sm text-muted-foreground">{currentTime}</p>
           </div>
           <p className="text-muted-foreground">
-            Here's your personalized dashboard to start your day
+            Here&apos;s your personalized dashboard to start your day
           </p>
         </motion.div>
 

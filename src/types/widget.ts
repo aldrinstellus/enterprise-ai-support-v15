@@ -15,6 +15,7 @@ export type WidgetType =
   | 'ticket-detail'
   | 'live-ticket-detail'
   | 'meeting-scheduler'
+  | 'meeting-confirmation'
   | 'message-composer'
   | 'call-prep-notes'
   | 'response-composer'
@@ -455,6 +456,25 @@ export interface MeetingSchedulerData {
   coachingTips?: string[];
 }
 
+// Meeting Confirmation Widget (All personas)
+export interface MeetingConfirmationData {
+  title?: string;
+  meetingDate: string;
+  meetingTime: string;
+  timezone: string;
+  duration?: string;
+  location?: string;
+  invitesSent: Array<{
+    name: string;
+    email: string;
+    role?: string;
+  }>;
+  briefingCreated?: boolean;
+  briefingItems?: string[];
+  nextAction?: string;
+  agendaItems?: string[];
+}
+
 // Call Prep Notes Widget (Support Agent)
 export interface CallPrepNotesData {
   title: string;
@@ -851,6 +871,7 @@ export type WidgetData =
   | AgentPerformanceComparisonData
   | CustomerRiskListData
   | MeetingSchedulerData
+  | MeetingConfirmationData
   | CallPrepNotesData
   | ResponseComposerData
   | SimilarTicketsAnalysisData

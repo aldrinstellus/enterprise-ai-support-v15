@@ -505,7 +505,7 @@ export async function POST(req: NextRequest) {
             }
           } else {
             console.log('[Processing] Workflow not handled, falling back to Claude AI');
-            timeline[timeline.length - 1].status = 'skipped';
+            timeline[timeline.length - 1].status = 'completed';
             timeline[timeline.length - 1].duration = 100;
           }
         } else {

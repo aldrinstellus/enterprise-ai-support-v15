@@ -29,7 +29,7 @@ import {
 } from '@/data/demo-widget-data';
 import type { WidgetType, WidgetData } from '@/types/widget';
 
-const widgetDataMap: Record<WidgetType, WidgetData> = {
+const widgetDataMap: Partial<Record<WidgetType, WidgetData>> = {
   'executive-summary': executiveSummaryDemo,
   'customer-risk-profile': customerRiskProfileDemo,
   'customer-risk-list': customerRiskListDemo,

@@ -1,21 +1,22 @@
 'use client';
 
 import { useState } from 'react';
+import type { ComponentType } from 'react';
 import { LayoutDashboard, Maximize2, X } from 'lucide-react';
 import { ExecutiveSummaryWidget } from './ExecutiveSummaryWidget';
 import { SLAPerformanceChartWidget } from './SLAPerformanceChartWidget';
 
-// Widget type mapping
-const widgetComponents: Record<string, any> = {
-  'executive-summary': ExecutiveSummaryWidget,
-  'sla-performance': SLAPerformanceChartWidget,
-  'sla-dashboard': SLAPerformanceChartWidget,
-  'sla-performance-chart': SLAPerformanceChartWidget,
+// Widget type mapping - maps widget type string to React component
+const widgetComponents: Record<string, ComponentType<{ data: unknown }>> = {
+  'executive-summary': ExecutiveSummaryWidget as ComponentType<{ data: unknown }>,
+  'sla-performance': SLAPerformanceChartWidget as ComponentType<{ data: unknown }>,
+  'sla-dashboard': SLAPerformanceChartWidget as ComponentType<{ data: unknown }>,
+  'sla-performance-chart': SLAPerformanceChartWidget as ComponentType<{ data: unknown }>,
 };
 
 interface DashboardWidgetItem {
   type: string;
-  data: any;
+  data: unknown;
   span?: number;
 }
 

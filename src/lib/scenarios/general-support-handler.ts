@@ -11,6 +11,13 @@ import { WorkflowContext, WorkflowResult, SystemActionResult } from '../workflow
 import { getGeneralSupportTemplate } from '../response-templates';
 import { searchKnowledgeBase, createJiraTicket } from '../integrations/mock-systems';
 
+// Type definitions for KB article
+interface KBArticle {
+  title: string;
+  url: string;
+  relevance: number;
+}
+
 export async function handleGeneralSupport(context: WorkflowContext): Promise<WorkflowResult> {
   console.log('[General Support] Starting workflow for query:', context.subject);
 
@@ -29,7 +36,7 @@ export async function handleGeneralSupport(context: WorkflowContext): Promise<Wo
     });
 
     if (kbResult.success && kbResult.data?.article) {
-      const article = kbResult.data.article;
+      const article = kbResult.data.article as KBArticle;
 
       // Check relevance score (demo: >0.75 is good enough)
       if (article.relevance > 0.75) {

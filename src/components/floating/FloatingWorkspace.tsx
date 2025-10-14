@@ -35,7 +35,7 @@ interface FloatingWidget {
   position: { x: number; y: number };
 }
 
-const widgetDataMap: Record<WidgetType, WidgetData> = {
+const widgetDataMap: Partial<Record<WidgetType, WidgetData>> = {
   'executive-summary': executiveSummaryDemo,
   'customer-risk-profile': customerRiskProfileDemo,
   'customer-risk-list': customerRiskListDemo,
@@ -208,7 +208,7 @@ export function FloatingWorkspace() {
           <DraggableWidget
             key={floatingWidget.id}
             widget={floatingWidget.widget}
-            widgetData={widgetDataMap[floatingWidget.widget.type]}
+            widgetData={(widgetDataMap[floatingWidget.widget.type] || {}) as WidgetData}
             initialPosition={floatingWidget.position}
             onClose={() => removeFloatingWidget(floatingWidget.id)}
             zIndex={getZIndex(floatingWidget.id)}

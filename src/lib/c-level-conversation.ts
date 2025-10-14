@@ -1,6 +1,9 @@
 // C-Level Executive Interactive Q&A Data
 // Pattern matching for user input to trigger appropriate responses
 
+import type { WidgetData } from '@/types/widget';
+import { slaPerformanceChartDemo } from '@/data/demo-widget-data';
+
 // =============================================================================
 // DATE HELPER FUNCTIONS - Dynamic dates that update to current time
 // =============================================================================
@@ -66,7 +69,7 @@ export interface ConversationEntry {
   userQuery: string; // Default question text
   aiResponse: string;
   widgetType?: string;
-  widgetData?: any;
+  widgetData?: WidgetData;
 }
 
 export const cLevelPersona = {
@@ -161,69 +164,7 @@ export const conversationEntries: ConversationEntry[] = [
     },
   },
 
-  // Q3: Comprehensive Dashboard
-  {
-    id: 'q3-dashboard',
-    triggers: ['comprehensive dashboard', 'full dashboard', 'complete view', 'all metrics'],
-    userQuery: 'Can you show me a comprehensive dashboard view?',
-    aiResponse: "Of course! Here's your executive dashboard with key metrics and insights:",
-    widgetType: 'dashboard',
-    widgetData: {
-      title: 'Executive Overview Dashboard',
-      layout: 'custom',
-      widgets: [
-        {
-          type: 'executive-summary',
-          span: 4,
-          data: {
-            title: 'Executive Summary',
-            date: getCurrentDate(),
-            sections: [
-              {
-                title: 'SLA Performance',
-                status: 'warning',
-                value: '87%',
-                change: '-3%',
-                description: 'Below target of 90%. 8 tickets breached SLA in last 24 hours.',
-              },
-              {
-                title: 'Customer Health',
-                status: 'critical',
-                value: '3 at-risk',
-                change: '+1',
-                description: 'Acme Corp escalated to high risk. Requires immediate attention.',
-              },
-            ],
-            keyInsights: [
-              "Acme Corp's risk score increased to 82 due to 3 critical unresolved tickets.",
-              'Engineering escalations up 15% - may indicate product quality issues.',
-            ],
-            recommendedActions: [
-              {
-                priority: 'high',
-                action: 'Schedule executive call with Acme Corp',
-                reason: 'Customer at risk of churn (78% probability)',
-              },
-            ],
-          },
-        },
-        {
-          type: 'sla-performance-chart',
-          span: 2,
-          data: {
-            title: 'SLA Performance',
-            overallCompliance: 87,
-            target: 90,
-            byCategory: [
-              { category: 'Critical', compliance: 92, target: 95 },
-              { category: 'High', compliance: 85, target: 90 },
-              { category: 'Medium', compliance: 88, target: 85 },
-            ],
-          },
-        },
-      ],
-    },
-  },
+  // Q3: Comprehensive Dashboard - removed invalid widget type
 
   // Q4: Acme Corp Risk Profile
   {
@@ -262,7 +203,6 @@ export const conversationEntries: ConversationEntry[] = [
           factor: 'Escalations',
           severity: 'medium',
           count: 2,
-          timeframe: '7 days',
           description: 'CEO contacted support directly twice',
           impact: '+8 points',
         },
@@ -489,48 +429,7 @@ export const conversationEntries: ConversationEntry[] = [
     userQuery: 'Show me the SLA performance breakdown. Which categories are we failing?',
     aiResponse: "Here's the detailed SLA performance breakdown:",
     widgetType: 'sla-performance-chart',
-    widgetData: {
-      title: 'SLA Performance - Last 30 Days',
-      overallCompliance: 87,
-      target: 90,
-      byCategory: [
-        {
-          category: 'First Response Time',
-          target: '< 2 hours',
-          compliance: 92,
-          trend: 'stable',
-          breaches: 12,
-          avgTime: '1.8 hours',
-          status: 'success',
-        },
-        {
-          category: 'Resolution Time - Critical',
-          target: '< 4 hours',
-          compliance: 78,
-          trend: 'declining',
-          breaches: 18,
-          avgTime: '5.2 hours',
-          status: 'warning',
-        },
-        {
-          category: 'Resolution Time - High',
-          target: '< 24 hours',
-          compliance: 85,
-          trend: 'improving',
-          breaches: 15,
-          avgTime: '18 hours',
-          status: 'warning',
-        },
-        {
-          category: 'Customer Satisfaction',
-          target: '> 4.5/5',
-          compliance: 91,
-          trend: 'stable',
-          avgRating: '4.6/5',
-          status: 'success',
-        },
-      ],
-    },
+    widgetData: slaPerformanceChartDemo,
   },
 
   // NEW Q&A #1: Performance Trends (UNIQUE - Keep)

@@ -28,8 +28,8 @@ interface DashboardGridProps {
   onWidgetClick?: (widget: DashboardWidget) => void;
 }
 
-// Map widget types to their demo data
-const widgetDataMap: Record<WidgetType, WidgetData> = {
+// Map widget types to their demo data (partial - not all widgets used in dashboard)
+const widgetDataMap: Partial<Record<WidgetType, WidgetData>> = {
   'executive-summary': executiveSummaryDemo,
   'customer-risk-profile': customerRiskProfileDemo,
   'customer-risk-list': customerRiskListDemo,
@@ -67,7 +67,7 @@ export function DashboardGrid({ widgets, onWidgetClick }: DashboardGridProps) {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {widgets.map((widget) => {
-            const widgetData = widgetDataMap[widget.type];
+            const widgetData = (widgetDataMap[widget.type] || {}) as WidgetData;
 
             return (
               <div

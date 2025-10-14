@@ -3,25 +3,13 @@
 import { useState, useRef, useEffect, useMemo, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Send, Sparkles, PanelLeft, PanelLeftClose, Copy, Check, RotateCw, ThumbsUp, ThumbsDown, Download } from 'lucide-react';
-import { detectWidgetQuery, type PersonaId } from '@/lib/query-detection';
+import { detectWidgetQuery, type PersonaId, type QueryMatch } from '@/lib/query-detection';
 import { WidgetRenderer } from '@/components/widgets/WidgetRenderer';
 import { useQuickAction } from '@/contexts/QuickActionContext';
 import { useSidebar } from '@/contexts/SidebarContext';
-import { useConversation } from '@/contexts/ConversationContext';
+import { useConversation, type Message } from '@/contexts/ConversationContext';
 import { Avatar } from '@/components/ui/Avatar';
 import type { Persona } from '@/types/persona';
-
-interface Message {
-  id: string;
-  type: 'user' | 'ai' | 'widget';
-  content?: string;
-  widgetType?: string;
-  widgetData?: any;
-  timestamp: Date;
-  feedback?: 'like' | 'dislike';
-  userQuery?: string; // Store the original query for regeneration
-  isTyping?: boolean; // Track if this message is currently being typed
-}
 
 interface InteractiveChatProps {
   persona?: Persona;
@@ -245,9 +233,9 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
   };
 
   // Helper to handle matched responses
-  const handleMatch = async (match: any, query: string) => {
-    // Support both old format (aiResponse) and new format (responseText)
-    const responseText = match.responseText || match.aiResponse;
+  const handleMatch = async (match: QueryMatch, query: string) => {
+    // Use responseText from QueryMatch interface
+    const responseText = match.responseText;
 
     // Phase 1 & 2: Thinking and Composing animations
     await simulateAIResponse(responseText);
@@ -449,7 +437,7 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
                   </div>
                 )}
 
-                {message.type === 'widget' && (
+                {message.type === 'widget' && message.widgetData && (
                   <div className="flex gap-3 -mx-6">
                     <div className="w-8 h-8 flex-shrink-0 ml-6" />
                     <div className="flex-1 pr-6">

@@ -2590,9 +2590,11 @@ Customer Success Manager`,
   },
 };
 
+import type { WidgetData } from '@/types/widget';
+
 // Helper function to get demo data for each widget type
-export function getWidgetDemoData(widgetType: string): any {
-  const dataMap: Record<string, any> = {
+export function getWidgetDemoData(widgetType: string): WidgetData | null {
+  const dataMap: Record<string, WidgetData> = {
     'executive-summary': executiveSummaryDemo,
     'analytics-dashboard': analyticsDashboardDemo,
     'performance-trends': performanceTrendsDemo,

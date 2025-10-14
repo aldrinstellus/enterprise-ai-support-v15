@@ -9,6 +9,23 @@ import type { ZohoWebhookRequest } from '@/types/zoho';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+// Zoho Webhook Event Structure
+interface ZohoWebhookPayload {
+  id?: string;
+  ticketId?: string;
+  ticketNumber?: string;
+  channel?: string;
+  subject?: string;
+  [key: string]: unknown; // Allow additional properties
+}
+
+interface ZohoWebhookEvent {
+  eventType: string;
+  payload: ZohoWebhookPayload;
+  orgId: string;
+  eventTime: string;
+}
+
 /**
  * POST /api/zoho/webhook
  * Receive webhook events from Zoho Desk
@@ -21,7 +38,7 @@ export async function POST(req: NextRequest) {
     console.log('[Zoho Webhook] Raw payload type:', Array.isArray(rawBody) ? 'array' : 'object');
 
     // Handle different Zoho payload formats
-    let events: Array<{ eventType: string; payload: any; orgId: string; eventTime: string }>;
+    let events: ZohoWebhookEvent[];
 
     if (Array.isArray(rawBody)) {
       // Direct array format (most common)

@@ -14,15 +14,15 @@ export interface ConversationEntry {
   triggers: string[];
   userQuery: string;
   aiResponse: string;
-  widgetType?: any;
-  widgetData?: any;
+  widgetType?: string;
+  widgetData?: WidgetData;
 }
 
-// Helper to get tomorrow's date
+// Helper to get tomorrow's date in ISO format
 function getTomorrow(): string {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  return tomorrow.toISOString().split('T')[0]; // Returns YYYY-MM-DD
 }
 
 const conversationEntries: ConversationEntry[] = [

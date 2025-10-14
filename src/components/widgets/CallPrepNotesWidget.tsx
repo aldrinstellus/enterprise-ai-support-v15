@@ -255,7 +255,7 @@ export function CallPrepNotesWidget({ data }: { data: CallPrepNotesData }) {
           </div>
           {data.context.sentiment.recentFeedback && (
             <p className="text-xs text-muted-foreground italic">
-              "{data.context.sentiment.recentFeedback}"
+              &quot;{data.context.sentiment.recentFeedback}&quot;
             </p>
           )}
         </div>

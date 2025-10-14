@@ -155,7 +155,7 @@ export function MessageComposerWidget({ data, onAction }: { data: MessageCompose
                 <div className="flex-1">
                   <p className="text-sm font-medium text-foreground mb-1">{template.name}</p>
                   <p className="text-xs text-muted-foreground mb-2">{template.description}</p>
-                  <p className="text-xs text-muted-foreground italic line-clamp-2">"{template.preview}"</p>
+                  <p className="text-xs text-muted-foreground italic line-clamp-2">&quot;{template.preview}&quot;</p>
                 </div>
               </button>
             ))}
@@ -171,7 +171,7 @@ export function MessageComposerWidget({ data, onAction }: { data: MessageCompose
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground mb-2">Scheduling Suggestion</p>
               <p className="text-sm text-muted-foreground mb-3">
-                Based on customer's availability, these times work best:
+                Based on customer&apos;s availability, these times work best:
               </p>
               <div className="flex items-center gap-2 flex-wrap">
                 {data.schedulingSuggestion.preferredTimes.map((time, index) => (

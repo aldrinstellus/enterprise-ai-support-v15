@@ -12,7 +12,7 @@ export function KnowledgeBaseSearchWidget({ data }: { data: KnowledgeBaseSearchD
             Knowledge Base Search
           </h4>
           <p className="text-sm text-muted-foreground mt-1">
-            {data.resultsCount} articles found for "{data.query}"
+            {data.resultsCount} articles found for &quot;{data.query}&quot;
           </p>
         </div>
       </div>

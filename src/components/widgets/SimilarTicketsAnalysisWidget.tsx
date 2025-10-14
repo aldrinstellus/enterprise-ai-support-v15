@@ -37,7 +37,7 @@ export function SimilarTicketsAnalysisWidget({ data }: { data: SimilarTicketsAna
       <div className="glass-card rounded-lg border border-border bg-card/70 p-4">
         <h5 className="text-sm font-semibold text-foreground flex items-center gap-2 mb-4">
           <Target className="h-4 w-4 text-primary" />
-          Common Patterns You've Resolved
+          Common Patterns You&apos;ve Resolved
         </h5>
         <div className="space-y-4">
           {data.commonPatterns.map((pattern, index) => (

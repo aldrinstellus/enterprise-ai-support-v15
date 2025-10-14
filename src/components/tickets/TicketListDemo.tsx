@@ -57,8 +57,9 @@ export function TicketListDemo({
       } else {
         throw new Error(data.error || 'Unknown error');
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

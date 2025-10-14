@@ -6,16 +6,13 @@ const nextConfig: NextConfig = {
   generateBuildId: async () => {
     return `build-${Date.now()}`;
   },
-  // Allow build to proceed with ESLint warnings for faster deployment
+  // Production builds will now fail if there are TypeScript or ESLint errors
+  // This ensures code quality and prevents broken code from reaching production
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has type errors.
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   // Output configuration for Vercel deployment
   output: 'standalone',
