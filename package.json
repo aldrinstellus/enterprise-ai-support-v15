@@ -12,6 +12,7 @@
     "dev:ws": "node server/mock-ws-server.js",
     "build": "next build --turbopack",
     "start": "next start -p 3014",
+    "postinstall": "prisma generate",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "db:generate": "prisma generate",
