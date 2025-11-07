@@ -32,12 +32,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Enterprise AI Support V14** - Production-ready AI-powered support dashboard with 7 automated workflows, 19 specialized widgets, multi-persona RBAC system, and comprehensive SDLC documentation. **100/100 Production Score** 🏆
+**Enterprise AI Support V15** - Development branch for new features and enhancements, based on v14's production-ready foundation. Building on 7 automated workflows, 19 specialized widgets, and multi-persona RBAC system.
 
-**Version**: 14.0.0
-**Port**: 3014
-**Status**: Production-Ready & Enterprise-Grade
-**Production URL**: https://enterprise-ai-support-v14.vercel.app
+**Version**: 15.0.0
+**Port**: 3015
+**Status**: Development - Active Feature Work
+**Base**: Cloned from V14 (100/100 Production Score)
 
 ## 📚 Documentation Structure
 
@@ -56,24 +56,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Application URLs
 
-**Development Server**: http://localhost:3014
+**Development Server**: http://localhost:3015
 
 **Demo Pages** (Main Application):
-- **C-Level Executive**: http://localhost:3014/demo/c-level
-- **CS Manager**: http://localhost:3014/demo/cs-manager
-- **Support Agent**: http://localhost:3014/demo/support-agent
+- **C-Level Executive**: http://localhost:3015/demo/c-level
+- **CS Manager**: http://localhost:3015/demo/cs-manager
+- **Support Agent**: http://localhost:3015/demo/support-agent
 
-**API Health Check**: http://localhost:3014/api/health
+**API Health Check**: http://localhost:3015/api/health
 
 ## Development Commands
 
 ### Core Development
 ```bash
-npm run dev              # Start Next.js dev server with Turbopack (port 3014)
+npm run dev              # Start Next.js dev server with Turbopack (port 3015)
 npm run dev:full         # Start both frontend and mock WebSocket server
 npm run dev:ws           # Start mock WebSocket server only
 npm run build            # Production build with Turbopack
-npm run start            # Start production server (port 3014)
+npm run start            # Start production server (port 3015)
 ```
 
 ### Code Quality
@@ -269,7 +269,7 @@ NEXT_PUBLIC_WS_URL=ws://localhost:3001
 - **Demo Mode**: The app works fully without API keys using mock data
 - **Claude SDK**: Real AI responses available when `ANTHROPIC_API_KEY` is configured (see CLAUDE-SDK-SETUP.md)
 - **Database**: Prisma schema defined but database connection optional for demo
-- **Port 3014**: Chosen to avoid conflicts with other project versions
+- **Port 3015**: Chosen to avoid conflicts with other project versions (v14 uses 3014)
 - **No Backend**: All state managed in localStorage for demo purposes
 - **Turbopack**: Next.js 15 uses Turbopack by default for fast builds (<1s)
 
@@ -333,7 +333,7 @@ All documentation is in `/docs/` organized into 15 categories:
 
 ## Project Context & Evolution
 
-**V14** represents the **production-perfect milestone** with enterprise-grade documentation:
+**Version Evolution**:
 
 - **V1-V2**: Traditional support ticket dashboard
 - **V3**: Claude-style AI chat interface with SDK integration
@@ -341,6 +341,7 @@ All documentation is in `/docs/` organized into 15 categories:
 - **V6**: New features development branch
 - **V11**: Advanced experimental branch
 - **V12**: Zoho Desk webhook integration, production deployment
-- **V14**: **100/100 production score** with comprehensive SDLC documentation 🏆
+- **V14**: **100/100 production score** with comprehensive SDLC documentation 🏆 (PRODUCTION)
+- **V15**: **Development branch** - New features and enhancements (THIS VERSION)
 
-**Focus**: Enterprise-ready AI support dashboard with complete documentation for developers, architects, DevOps, QA, and stakeholders.
+**Focus**: Building on v14's enterprise-ready foundation to explore new features, improvements, and experimental capabilities.
