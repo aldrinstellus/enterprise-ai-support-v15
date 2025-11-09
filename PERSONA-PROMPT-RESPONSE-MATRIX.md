@@ -9,13 +9,17 @@
 
 ## 📊 QUICK REFERENCE
 
-| Persona | Quick Actions | Demo Scenarios | Total Queries | Permissions |
-|---------|---------------|----------------|---------------|-------------|
-| **C-Level Executive** | 7 | 12 | 19 | 5 |
-| **CS Manager** | 9 | 12 | 21 | 7 |
-| **Support Agent** | 7 | 12 | 19 | 7 |
-| **CSM** | 7 | 12 | 19 | 10 |
-| **TOTAL** | **30** | **48** | **78** | **29** |
+| Persona | Role Title | Quick Actions | Demo Scenarios | Total Queries | Permissions |
+|---------|------------|---------------|----------------|---------------|-------------|
+| **C-Level Executive** (Sarah Chen) | Chief Executive Officer | 7 | 12 | 19 | 5 |
+| **CS Manager** (Michael Torres) | Customer Support Operations Manager | 9 | 12 | 21 | 7 |
+| **Support Agent** (Christopher Hayes) | Senior Support Engineer | 7 | 12 | 19 | 7 |
+| **CSM** (Jordan Taylor) | Customer Success Manager (Client Relations) | 7 | 12 | 19 | 10 |
+| **TOTAL** | | **30** | **48** | **78** | **29** |
+
+> **Note**: **CS Manager** and **CSM** have different roles despite similar-sounding titles:
+> - **CS Manager** (Michael Torres) = Internal **Team Operations Manager** (manages support agents, SLA, workload)
+> - **CSM** (Jordan Taylor) = External **Client Success Manager** (manages customer accounts, renewals, NPS)
 
 ---
 
@@ -64,7 +68,7 @@
 
 ---
 
-## 🦸 PERSONA 2: CS MANAGER (Michael Torres)
+## 🦸 PERSONA 2: CS MANAGER (Michael Torres - Customer Support Operations Manager)
 
 ### Quick Actions (9)
 
@@ -156,7 +160,7 @@
 
 ---
 
-## 🦸 PERSONA 4: CSM (Jordan Taylor) - NEW IN V15
+## 🦸 PERSONA 4: CSM (Jordan Taylor - Customer Success Manager - Client Relations) - NEW IN V15
 
 ### Quick Actions (7)
 

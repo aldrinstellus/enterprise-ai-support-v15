@@ -27,7 +27,16 @@ export type WidgetType =
   | 'escalation-path'
   | 'system-access-status'
   | 'interactive-update'
-  | 'ticket-processing';
+  | 'ticket-processing'
+  | 'csm-dashboard'
+  | 'client-health-dashboard'
+  | 'product-adoption-metrics'
+  | 'churn-risk-analysis'
+  | 'renewal-pipeline'
+  | 'upsell-opportunities'
+  | 'client-feedback-dashboard'
+  | 'business-review-scheduler'
+  | 'product-roadmap-view';
 
 // ============================================================================
 // WIDGET DATA INTERFACES (Based on Bhanu's Demo Data)

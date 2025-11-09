@@ -135,7 +135,7 @@ export const personas: Persona[] = [
     id: 'cs-manager',
     name: 'Michael Torres',
     email: 'michael.torres@company.com',
-    role: 'Customer Success Manager',
+    role: 'Customer Support Operations Manager',
     badge: {
       label: 'CS MANAGER',
       icon: Users,

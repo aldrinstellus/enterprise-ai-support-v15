@@ -37,7 +37,7 @@ export interface QueryMatch {
   responseText: string;
 }
 
-export type PersonaId = 'c-level' | 'cs-manager' | 'support-agent';
+export type PersonaId = 'c-level' | 'cs-manager' | 'support-agent' | 'csm';
 
 /**
  * Detect widget intent from user query
@@ -56,6 +56,8 @@ export function detectWidgetQuery(
       return detectManagerQuery(q);
     case 'support-agent':
       return detectAgentQuery(q);
+    case 'csm':
+      return detectCSMQuery(q);
     default:
       return null;
   }
@@ -653,4 +655,84 @@ function detectAgentQuery(q: string): QueryMatch | null {
   }
 
   return null;
+}
+
+// ============================================================================
+// CSM (CUSTOMER SUCCESS MANAGER) QUERIES
+// ============================================================================
+
+function detectCSMQuery(q: string): QueryMatch | null {
+  // Client Health & Adoption
+  if (q.includes('health score') || q.includes('client health')) {
+    return {
+      widgetType: 'client-health-dashboard',
+      widgetData: null,
+      responseText: "Here are the health scores for your assigned clients:",
+    };
+  }
+
+  if (q.includes('product adoption') || q.includes('feature usage')) {
+    return {
+      widgetType: 'product-adoption-metrics',
+      widgetData: null,
+      responseText: "Here's the product adoption analysis across your clients:",
+    };
+  }
+
+  if (q.includes('churn') && q.includes('risk')) {
+    return {
+      widgetType: 'churn-risk-analysis',
+      widgetData: null,
+      responseText: "These clients are at risk of churning this quarter:",
+    };
+  }
+
+  // Renewals & Revenue
+  if (q.includes('renewal') || q.includes('contract')) {
+    return {
+      widgetType: 'renewal-pipeline',
+      widgetData: null,
+      responseText: "Here's your renewal pipeline for the next 90 days:",
+    };
+  }
+
+  if (q.includes('upsell') || q.includes('cross-sell') || q.includes('expansion')) {
+    return {
+      widgetType: 'upsell-opportunities',
+      widgetData: null,
+      responseText: "Here are the expansion opportunities identified:",
+    };
+  }
+
+  // Client Feedback & Engagement
+  if (q.includes('nps') || q.includes('feedback') || q.includes('satisfaction')) {
+    return {
+      widgetType: 'client-feedback-dashboard',
+      widgetData: null,
+      responseText: "Here's the recent client feedback and NPS scores:",
+    };
+  }
+
+  if (q.includes('business review') || q.includes('qbr')) {
+    return {
+      widgetType: 'business-review-scheduler',
+      widgetData: null,
+      responseText: "Here's your business review schedule and upcoming meetings:",
+    };
+  }
+
+  if (q.includes('product roadmap') || q.includes('upcoming feature')) {
+    return {
+      widgetType: 'product-roadmap-view',
+      widgetData: null,
+      responseText: "Here's the product roadmap with client-requested features:",
+    };
+  }
+
+  // Default: Show CSM dashboard
+  return {
+    widgetType: 'csm-dashboard',
+    widgetData: null,
+    responseText: "Here's your Customer Success Manager dashboard:",
+  };
 }
