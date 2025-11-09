@@ -258,8 +258,8 @@ export const personas: Persona[] = [
   // ===========================
   {
     id: 'support-agent',
-    name: 'Alex Rivera',
-    email: 'alex.rivera@company.com',
+    name: 'Christopher Hayes',
+    email: 'christopher.hayes@company.com',
     role: 'Senior Support Engineer',
     badge: {
       label: 'SUPPORT AGENT',
@@ -360,6 +360,88 @@ export const personas: Persona[] = [
       'view_own_meetings',
       'view_own_performance',
     ],
+  },
+
+  // ===========================
+  // CSM - Customer Success Manager
+  // ===========================
+  {
+    id: 'csm',
+    name: 'Jordan Taylor',
+    email: 'jordan.taylor@company.com',
+    role: 'Customer Success Manager',
+    badge: {
+      label: 'CSM',
+      icon: Target,
+      color: 'text-cyan-500',
+    },
+    theme: {
+      primary: 'oklch(0.68 0.14 210)', // Cyan
+      accent: 'oklch(0.64 0.18 240)', // Blue
+      badgeGradient: 'from-cyan-500 via-blue-500 to-cyan-500',
+      badgeSolid: 'bg-cyan-500',
+      badgeRing: 'ring-cyan-500/30',
+    },
+    quickActions: [
+      {
+        id: 'client-health',
+        icon: Activity,
+        label: 'Client Health Scores',
+        badge: 'Live',
+        badgeColor: 'bg-cyan-500 text-white',
+        query: 'Show me health scores for my assigned clients',
+      },
+      {
+        id: 'product-adoption',
+        icon: TrendingUp,
+        label: 'Product Adoption',
+        badge: 'Metrics',
+        badgeColor: 'bg-green-600 text-white',
+        query: 'Show product adoption metrics and feature usage across clients',
+      },
+      {
+        id: 'renewal-pipeline',
+        icon: Calendar,
+        label: 'Renewal Pipeline',
+        badge: '12',
+        badgeColor: 'bg-orange-500 text-white',
+        query: 'Show upcoming renewals and contract status',
+      },
+      {
+        id: 'client-feedback',
+        icon: Bell,
+        label: 'Client Feedback',
+        badge: 'NPS',
+        badgeColor: 'bg-purple-500 text-white',
+        query: 'Show recent client feedback and NPS scores',
+      },
+      {
+        id: 'upsell-opportunities',
+        icon: ArrowUpCircle,
+        label: 'Upsell Opportunities',
+        badge: '$2.4M',
+        badgeColor: 'bg-yellow-600 text-white',
+        query: 'Identify upsell and cross-sell opportunities',
+      },
+      {
+        id: 'product-roadmap',
+        icon: GitBranch,
+        label: 'Product Roadmap',
+        badge: 'Q1',
+        badgeColor: 'bg-blue-500 text-white',
+        query: 'Show product roadmap and upcoming features',
+      },
+      {
+        id: 'client-meetings',
+        icon: Calendar,
+        label: 'Client Meetings',
+        badge: '8',
+        badgeColor: 'bg-cyan-600 text-white',
+        query: 'Schedule and manage client business reviews',
+      },
+    ],
+    permissions: [],
+    demoScenarios: {},
   },
 ];
 

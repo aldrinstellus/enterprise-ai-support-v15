@@ -167,6 +167,37 @@ export const dashboardWidgets: Record<PersonaType, DashboardWidget[]> = {
       query: 'Prep notes for my next customer call',
     },
   ],
+
+  'csm': [
+    {
+      id: 'client-health',
+      type: 'customer-risk-list',
+      title: 'Client Health Scores',
+      description: 'Monitor client engagement and satisfaction',
+      query: 'Show me health scores for my assigned clients',
+    },
+    {
+      id: 'renewal-pipeline',
+      type: 'analytics-dashboard',
+      title: 'Renewal Pipeline',
+      description: 'Track upcoming renewals and contracts',
+      query: 'Show upcoming renewals and contract status',
+    },
+    {
+      id: 'product-adoption',
+      type: 'analytics-dashboard',
+      title: 'Product Adoption',
+      description: 'Feature usage and adoption metrics',
+      query: 'Show product adoption metrics and feature usage across clients',
+    },
+    {
+      id: 'upsell-opportunities',
+      type: 'analytics-dashboard',
+      title: 'Upsell Opportunities',
+      description: 'Cross-sell and expansion opportunities',
+      query: 'Identify upsell and cross-sell opportunities',
+    },
+  ],
 };
 
 export function getDashboardWidgets(persona: PersonaType): DashboardWidget[] {

@@ -1,6 +1,6 @@
 import { LucideIcon } from 'lucide-react';
 
-export type PersonaType = 'c-level' | 'cs-manager' | 'support-agent';
+export type PersonaType = 'c-level' | 'cs-manager' | 'support-agent' | 'csm';
 
 export interface PersonaTheme {
   primary: string; // HSL values without hsl()

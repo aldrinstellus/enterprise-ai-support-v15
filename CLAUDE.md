@@ -169,6 +169,8 @@ See `prisma/schema.prisma` for complete schema.
 
 ### Component Architecture
 
+**V15 Clean Structure** (Reorganized 2025-11-07):
+
 ```
 src/
 ├── app/
@@ -176,24 +178,51 @@ src/
 │   ├── layout.tsx            # Root layout
 │   ├── globals.css           # Solar Dusk theme + custom CSS variables
 │   ├── api/chat/route.ts     # Claude SDK integration
-│   └── workflows/page.tsx    # Workflow management page
+│   ├── demo/                 # Demo persona pages
+│   ├── workflows/page.tsx    # Workflow management page
+│   └── dashboard/            # Dashboard views
 ├── components/
+│   ├── presentation/         # NEW - Video/slide presentation system (V15)
+│   ├── accessibility/        # NEW - CC, zoom, WCAG 2.1 AA features (V15)
+│   ├── demo/                 # NEW - Demo controls (narrator, zoom) (V15)
+│   ├── branding/             # NEW - CTIS/ITSS brand system (V15)
 │   ├── widgets/              # 19 specialized widget components
 │   │   ├── WidgetRenderer.tsx       # Dynamic widget loader
 │   │   └── WidgetSkeleton.tsx       # Loading states
-│   ├── ui/
+│   ├── ui/                   # Radix UI components
 │   │   └── glowing-effect.tsx       # Mouse-following border effect
-│   └── animated-background.tsx
+│   ├── chat/                 # Chat interface components
+│   ├── layout/               # Layout components (header, sidebar)
+│   ├── smart/                # Smart components
+│   └── workflows/            # Workflow components
+├── config/
+│   ├── variants/             # NEW - Demo variants (Gov Prog/CIO/Client Service) (V15)
+│   └── personas.ts           # Persona configurations
 ├── types/
 │   ├── persona.ts            # Persona type definitions
 │   ├── widget.ts             # Widget type definitions
-│   └── workflow.ts           # Workflow type definitions
+│   ├── workflow.ts           # Workflow type definitions
+│   ├── brand/                # NEW - Brand type definitions (V15)
+│   ├── presentation/         # NEW - Presentation type definitions (V15)
+│   └── demo/                 # NEW - Demo type definitions (V15)
 ├── hooks/
-│   └── use-persona.ts        # Persona context provider
+│   ├── use-persona.ts        # Persona context provider
+│   ├── demo/                 # NEW - Demo hooks (V15)
+│   └── accessibility/        # NEW - Accessibility hooks (V15)
 ├── lib/
-│   └── query-detection.ts    # Intelligent query parsing
-└── data/
-    └── demo-widget-data.ts   # Mock data for widgets
+│   ├── query-detection.ts    # Intelligent query parsing
+│   └── integrations/         # External service integrations
+├── data/
+│   └── demo-widget-data.ts   # Mock data for widgets
+└── contexts/                 # React context providers
+
+archive/                      # Historical content (not in src/)
+├── v14-historical-docs/      # V14 documentation (formerly Aldo/)
+├── ui-experiments/           # Old UI experiments
+├── analysis/                 # Historical analysis
+├── references/               # Reference materials
+├── notes/                    # Development notes
+└── screenshots/              # Old screenshots
 ```
 
 ## Key Features

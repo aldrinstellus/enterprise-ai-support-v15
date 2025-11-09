@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import { Plus, ChevronDown, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Avatar } from '@/components/ui/Avatar';
 import { usePersona } from '@/hooks/use-persona';
 import { useConversation } from '@/contexts/ConversationContext';
+import { CTISLogo } from '@/components/layout/CTISLogo';
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -24,6 +25,7 @@ export function Sidebar({
   onResetData,
 }: SidebarProps) {
   usePathname();
+  const router = useRouter();
   const { currentPersona, setPersona, availablePersonas } = usePersona();
   const { messagesByPersona } = useConversation();
   const [personaSelectorOpen, setPersonaSelectorOpen] = useState(false);
@@ -50,16 +52,8 @@ export function Sidebar({
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         } transition-opacity duration-200`}
       >
-      {/* Version Badge */}
-      <div className="flex-shrink-0 px-4 pt-4 pb-2">
-        <div className="flex items-center justify-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-lg">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs font-bold text-primary tracking-wider">EAS-V14</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground">Production</span>
-        </div>
-      </div>
+      {/* CTIS Logo */}
+      <CTISLogo />
 
       {/* Fixed Top: New Conversation Button */}
       <div className="flex-shrink-0 px-4 pb-4 border-b border-border">
@@ -236,8 +230,8 @@ export function Sidebar({
                       onClick={() => {
                         setPersona(persona.id);
                         setPersonaSelectorOpen(false);
-                        // Navigate to persona's URL
-                        window.location.href = `/demo/${persona.id}`;
+                        // Use Next.js router for smooth client-side navigation
+                        router.push(`/demo/${persona.id}`);
                       }}
                       className={`w-full p-3 relative transition-colors ${
                         isActive ? 'bg-primary/10' : 'hover:bg-muted'
