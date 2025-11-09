@@ -440,8 +440,38 @@ export const personas: Persona[] = [
         query: 'Schedule and manage client business reviews',
       },
     ],
-    permissions: [],
-    demoScenarios: {},
+    demoScenarios: {
+      'Client Success': [
+        'Show me health scores for all my assigned clients',
+        'Which clients have declining product adoption?',
+        'Show me clients at risk of churn this quarter',
+        'Compare client engagement trends month-over-month',
+      ],
+      'Revenue Growth': [
+        'Show upcoming renewals in next 90 days',
+        'Identify expansion opportunities across my portfolio',
+        'Show clients ready for premium tier upgrade',
+        'Analyze revenue retention and expansion metrics',
+      ],
+      'Client Engagement': [
+        'Show recent NPS survey results by client',
+        'Which clients need business review meetings?',
+        'Show product roadmap items most requested by clients',
+        'Schedule quarterly business reviews for top accounts',
+      ],
+    },
+    permissions: [
+      'view_client_health',
+      'view_product_adoption',
+      'view_renewal_pipeline',
+      'view_nps_scores',
+      'manage_client_meetings',
+      'view_upsell_opportunities',
+      'view_product_roadmap',
+      'view_client_feedback',
+      'schedule_business_reviews',
+      'view_expansion_metrics',
+    ],
   },
 ];
 
