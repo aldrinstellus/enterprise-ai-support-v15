@@ -26,8 +26,8 @@ export const personas: Persona[] = [
   // ===========================
   {
     id: 'c-level',
-    name: 'Sarah Chen',
-    email: 'sarah.chen@company.com',
+    name: 'Jennifer Anderson',
+    email: 'jennifer.anderson@company.com',
     role: 'Chief Executive Officer',
     badge: {
       label: 'C-LEVEL',
@@ -133,8 +133,8 @@ export const personas: Persona[] = [
   // ===========================
   {
     id: 'cs-manager',
-    name: 'Michael Torres',
-    email: 'michael.torres@company.com',
+    name: 'David Miller',
+    email: 'david.miller@company.com',
     role: 'Customer Support Operations Manager',
     badge: {
       label: 'CS MANAGER',

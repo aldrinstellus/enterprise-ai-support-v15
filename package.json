@@ -1,17 +1,17 @@
 {
-  "name": "enterprise-ai-support-v15",
-  "version": "15.0.0",
+  "name": "enterprise-ai-support-v15-presentation",
+  "version": "15.1.0",
   "private": true,
-  "description": "Enterprise AI Support V15 - Development Branch with New Features and Enhancements",
+  "description": "Enterprise AI Support V15 - Presentation Mode (A/B Test Version)",
   "scripts": {
-    "dev": "next dev --turbopack -p 3015",
+    "dev": "next dev --turbopack -p 3016",
     "dev:full": "concurrently \"npm run dev:ws\" \"npm run dev\"",
     "dev:webhooks": "./scripts/start-dev.sh",
     "dev:stop": "./scripts/stop-dev.sh",
     "dev:webhook-url": "./scripts/get-webhook-url.sh",
     "dev:ws": "node server/mock-ws-server.js",
     "build": "next build --turbopack",
-    "start": "next start -p 3015",
+    "start": "next start -p 3016",
     "postinstall": "prisma generate",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
@@ -61,6 +61,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
+    "puppeteer": "^24.29.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

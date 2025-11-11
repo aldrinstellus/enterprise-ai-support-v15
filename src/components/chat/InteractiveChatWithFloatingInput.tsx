@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send } from 'lucide-react';
 import { InteractiveChat, type InteractiveChatRef } from './InteractiveChat';
-import { CommandPalette } from '../concepts/CommandPalette';
+// import { CommandPalette } from '../concepts/CommandPalette'; // TODO: Create CommandPalette component
 import { usePersona } from '@/hooks/use-persona';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { useQuickAction } from '@/contexts/QuickActionContext';
@@ -13,11 +13,13 @@ export function InteractiveChatWithFloatingInput() {
   const { currentPersona } = usePersona();
   const { sidebarOpen } = useSidebar();
   const { quickActionQuery, setQuickActionQuery } = useQuickAction();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const chatRef = useRef<InteractiveChatRef>(null);
   const processingQueryRef = useRef<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const widgets = getDashboardWidgets(currentPersona.id);
 
   // Monitor QuickAction context for widget click events
@@ -46,6 +48,7 @@ export function InteractiveChatWithFloatingInput() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleWidgetClick = (query: string) => {
     // Trigger the query in InteractiveChat via ref
     chatRef.current?.submitQuery(query);
@@ -108,13 +111,13 @@ export function InteractiveChatWithFloatingInput() {
         </button>
       </div>
 
-      {/* Command Palette */}
-      <CommandPalette
+      {/* Command Palette - TODO: Create CommandPalette component */}
+      {/* <CommandPalette
         isOpen={isPaletteOpen}
         onClose={() => setIsPaletteOpen(false)}
         widgets={widgets}
         onWidgetClick={handleWidgetClick}
-      />
+      /> */}
     </div>
   );
 }

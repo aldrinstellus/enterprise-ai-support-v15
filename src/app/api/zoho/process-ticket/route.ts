@@ -9,12 +9,12 @@ import { prisma } from '@/lib/prisma';
 import { getZohoDeskClient } from '@/lib/integrations/zoho-desk';
 import { smartKBSearch } from '@/lib/integrations/dify';
 import { getJiraClient } from '@/lib/integrations/jira';
-import { aggregateConversation, detectEscalationSignals, consolidateForAI, detectFailedResolution } from '@/lib/conversation-aggregator';
+import { aggregateConversation, detectEscalationSignals, consolidateForAI } from '@/lib/conversation-aggregator';
 import { cleanEmailContent } from '@/lib/email-cleaner';
 import { getPasswordResetTemplate, getAgentAssignmentTemplate, isPasswordResetIntent } from '@/lib/response-templates';
 import { getAvailableAgent, assignTicketToAgent, logAgentAssignment } from '@/lib/agent-assignment';
 import { detectWorkflowScenario, processWorkflowScenario, updateTicketWithWorkflowData } from '@/lib/workflow-engine';
-import type { TicketProcessingResult, TicketClassification, TicketCategory, ProcessingStep } from '@/types/ticket';
+import type { TicketProcessingResult, TicketClassification, ProcessingStep } from '@/types/ticket';
 import type { ZohoEventType, ZohoTicketPayload } from '@/types/zoho';
 import { TICKET_CATEGORIES } from '@/types/ticket';
 
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
   const timeline: ProcessingStep[] = [];
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { ticketId, eventType, payload, headers } = await req.json() as {
       ticketId: string;
       eventType: ZohoEventType;
@@ -540,6 +541,7 @@ export async function POST(req: NextRequest) {
     console.log(`[Processing] Classification: ${classification.primary_category} (${classification.confidence})`);
 
     // Step 5: Route based on classification
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const categoryConfig = TICKET_CATEGORIES[classification.primary_category];
 
     if (classification.primary_category === 'DATA_GENERATION') {

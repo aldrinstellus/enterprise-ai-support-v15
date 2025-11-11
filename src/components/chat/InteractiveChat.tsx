@@ -10,6 +10,11 @@ import { useSidebar } from '@/contexts/SidebarContext';
 import { useConversation, type Message } from '@/contexts/ConversationContext';
 import { Avatar } from '@/components/ui/Avatar';
 import type { Persona } from '@/types/persona';
+import { ClosedCaptions } from '@/components/accessibility/ClosedCaptions';
+import { NarratorToggle } from '@/components/demo/NarratorToggle';
+import { useClosedCaptions } from '@/hooks/accessibility/useClosedCaptions';
+import { useNarratorVisibility } from '@/hooks/demo/useNarratorVisibility';
+import { IntroSlides } from '@/components/presentation/IntroSlides';
 
 interface InteractiveChatProps {
   persona?: Persona;
@@ -26,6 +31,7 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
   const [inputValue, setInputValue] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const [isComposing, setIsComposing] = useState(false);
+  const [showIntroSlides, setShowIntroSlides] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isTyping, setIsTyping] = useState(false); // Keep for backward compatibility
   const [typingMessageId, setTypingMessageId] = useState<string | null>(null);
@@ -40,6 +46,13 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
   const { quickActionQuery } = useQuickAction();
   const { sidebarOpen, toggleSidebar } = useSidebar();
   const searchParams = useSearchParams();
+
+  // Accessibility features
+  const { updateCaption, clearCaption } = useClosedCaptions(true); // CC enabled by default
+  const { isVisible: narratorVisible } = useNarratorVisibility({
+    defaultVisible: false, // Hidden by default per client requirement
+    autoHideOnDemo: true,
+  });
 
   // Get current persona ID (memoized to ensure it updates when persona changes)
   const personaId = useMemo(() => (persona?.id || 'c-level') as PersonaId, [persona?.id]);
@@ -64,7 +77,6 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
   const messages = useMemo(() => messagesByPersona[personaId] || [], [messagesByPersona, personaId]);
 
   // Helper to update current persona's messages
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const setMessages = useCallback((updater: Message[] | ((prev: Message[]) => Message[])) => {
     setMessagesByPersona(prev => {
       const currentMessages = prev[personaId] || [];
@@ -72,6 +84,7 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
       console.log('[InteractiveChat] Updating messages for persona:', personaId, 'New count:', newMessages.length);
       return { ...prev, [personaId]: newMessages };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [personaId]);
 
   // Expose submitQuery method via ref
@@ -83,6 +96,11 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
 
   // Process a query string (used by both form submit and ref call)
   const processQuery = async (query: string) => {
+    // Hide intro slides on first user message
+    if (showIntroSlides) {
+      setShowIntroSlides(false);
+    }
+
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       type: 'user',
@@ -176,9 +194,16 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
       currentText += (i > 0 ? ' ' : '') + words[i];
       setDisplayedText(prev => ({ ...prev, [messageId]: currentText }));
 
+      // Update closed captions with current text
+      updateCaption(currentText);
+
       // Speed: ~10-12 words per second (80-100ms per word)
       await new Promise(resolve => setTimeout(resolve, 85));
     }
+
+    // Keep final caption displayed for 2 seconds, then clear
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    clearCaption();
 
     // Clear typing state
     setTypingMessageId(null);
@@ -292,6 +317,10 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
 
   return (
     <div className="flex flex-col h-full bg-background relative">
+      {/* Accessibility Controls */}
+      <ClosedCaptions position="bottom" />
+      <NarratorToggle position="top-right" />
+
       {/* Sidebar Toggle Button */}
       <button
         onClick={toggleSidebar}
@@ -308,13 +337,22 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
       {/* Messages Container */}
       <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-6 py-6 pb-40">
         <div className="pb-8">
-          {messages.length === 0 && !isThinking && !isComposing && (
+          {messages.length === 0 && !isThinking && !isComposing && showIntroSlides && (
+            <IntroSlides
+              autoAdvanceInterval={5000}
+              autoAdvance={true}
+              onDismiss={() => setShowIntroSlides(false)}
+              showControls={true}
+            />
+          )}
+
+          {messages.length === 0 && !isThinking && !isComposing && !showIntroSlides && (
             <div className="flex flex-col items-center justify-center h-full min-h-[60vh] text-center max-w-3xl mx-auto">
               <h1 className="text-4xl md:text-5xl font-medium text-foreground mb-3">
-                AI that <span className="italic">actually</span> gets work done
+                AI-enhanced customer support services
               </h1>
               <p className="text-muted-foreground text-lg mb-8 max-w-md">
-                Connect your tools. Ask AI. Watch it happen.
+                Saving costs and improving performance
               </p>
             </div>
           )}
@@ -346,9 +384,12 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
 
                 {message.type === 'ai' && (
                   <div className="flex gap-3 animate-in fade-in slide-in-from-left-2 duration-500" data-message-role="ai">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-chart-3 to-primary/80 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20">
-                      <Sparkles className="w-4 h-4 text-white" />
-                    </div>
+                    {narratorVisible && (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-chart-3 to-primary/80 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20">
+                        <Sparkles className="w-4 h-4 text-white" />
+                      </div>
+                    )}
+                    {!narratorVisible && <div className="w-8 h-8 flex-shrink-0" />}
                     <div className="max-w-2xl flex-1">
                       <div className="bg-gradient-to-br from-primary/8 via-accent/15 to-chart-3/10 rounded-2xl border border-primary/25 shadow-md overflow-hidden">
                         {/* Message Content */}
@@ -460,9 +501,12 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
             {/* Phase 1: Thinking Indicator */}
             {isThinking && (
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-chart-3 to-primary/80 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20 animate-pulse">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
+                {narratorVisible && (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-chart-3 to-primary/80 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20 animate-pulse">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                )}
+                {!narratorVisible && <div className="w-8 h-8 flex-shrink-0" />}
                 <div className="flex items-center gap-2 px-4 py-3">
                   <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
                   <span className="text-sm text-muted-foreground italic animate-pulse">
@@ -475,9 +519,12 @@ export const InteractiveChat = forwardRef<InteractiveChatRef, InteractiveChatPro
             {/* Phase 2: Composing Indicator */}
             {isComposing && (
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-chart-3 to-primary/80 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20">
-                  <Sparkles className="w-4 h-4 text-white" />
-                </div>
+                {narratorVisible && (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary via-chart-3 to-primary/80 flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/20">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                )}
+                {!narratorVisible && <div className="w-8 h-8 flex-shrink-0" />}
                 <div className="bg-gradient-to-br from-primary/8 via-accent/15 to-chart-3/10 rounded-2xl border border-primary/25 shadow-md overflow-hidden animate-in fade-in duration-300">
                   <div className="px-4 py-3">
                     {/* Skeleton lines with shimmer effect */}

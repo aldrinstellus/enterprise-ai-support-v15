@@ -101,6 +101,7 @@ interface ZohoTicketResponse {
   data: ZohoTicket[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface ZohoConversationsResponse {
   data: ZohoConversation[];
 }

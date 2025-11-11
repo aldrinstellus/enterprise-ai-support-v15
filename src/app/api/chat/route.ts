@@ -836,7 +836,7 @@ DASHBOARD_DATA:
     {"label": "Sarah Martinez", "value": "⭐ 1st", "status": "success", "icon": "Crown", "change": "98 pts", "trend": "up", "uptime": "42 tickets", "lastSync": "4.2h avg"},
     {"label": "Mike Chen", "value": "2nd", "status": "success", "icon": "Award", "change": "94 pts", "trend": "up", "uptime": "38 tickets", "lastSync": "4.8h avg"},
     {"label": "Emma Wilson", "value": "3rd", "status": "info", "icon": "Target", "change": "89 pts", "trend": "stable", "uptime": "35 tickets", "lastSync": "5.1h avg"},
-    {"label": "Alex Rivera", "value": "4th", "status": "info", "icon": "Users", "change": "85 pts", "trend": "up", "uptime": "33 tickets", "lastSync": "5.4h avg"},
+    {"label": "Christopher Hayes", "value": "4th", "status": "info", "icon": "Users", "change": "85 pts", "trend": "up", "uptime": "33 tickets", "lastSync": "5.4h avg"},
     {"label": "Lisa Park", "value": "5th", "status": "info", "icon": "Activity", "change": "82 pts", "trend": "down", "uptime": "31 tickets", "lastSync": "5.9h avg"},
     {"label": "Tom Wilson", "value": "⚠️ 6th", "status": "warning", "icon": "TrendingDown", "change": "68 pts", "trend": "down", "uptime": "24 tickets", "lastSync": "8.2h avg"}
   ],
@@ -1548,7 +1548,7 @@ I've attached a code sample implementing these best practices. This should resol
 Please let me know if you need help implementing these changes. I'm happy to schedule a 15-minute technical walkthrough.
 
 Best regards,
-Alex Rivera"
+Christopher Hayes"
 
 **Suggested Edits:** Add customer's name in greeting, mention their specific use case, offer call-to-action.`;
   }
@@ -1653,7 +1653,7 @@ DASHBOARD_DATA:
     {"label": "Sarah Martinez", "value": "⭐ Top", "status": "success", "icon": "Award", "change": "4.2h / 4.9 CSAT", "trend": "up", "uptime": "Resolution Time", "lastSync": "CSAT Score"},
     {"label": "Mike Chen", "value": "High", "status": "success", "icon": "TrendingUp", "change": "4.8h / 4.7 CSAT", "trend": "up", "uptime": "Resolution Time", "lastSync": "CSAT Score"},
     {"label": "Emma Wilson", "value": "Good", "status": "info", "icon": "Target", "change": "5.1h / 4.5 CSAT", "trend": "stable", "uptime": "Resolution Time", "lastSync": "CSAT Score"},
-    {"label": "Alex Rivera", "value": "Good", "status": "info", "icon": "CheckCircle2", "change": "5.4h / 4.7 CSAT", "trend": "up", "uptime": "Resolution Time", "lastSync": "CSAT Score"},
+    {"label": "Christopher Hayes", "value": "Good", "status": "info", "icon": "CheckCircle2", "change": "5.4h / 4.7 CSAT", "trend": "up", "uptime": "Resolution Time", "lastSync": "CSAT Score"},
     {"label": "Lisa Park", "value": "Average", "status": "info", "icon": "Activity", "change": "5.9h / 4.3 CSAT", "trend": "stable", "uptime": "Resolution Time", "lastSync": "CSAT Score"},
     {"label": "Tom Wilson", "value": "⚠️ Needs Help", "status": "warning", "icon": "AlertTriangle", "change": "8.2h / 3.2 CSAT", "trend": "down", "uptime": "Resolution Time", "lastSync": "CSAT Score"},
     {"label": "Team Average", "value": "Baseline", "status": "info", "icon": "Users", "change": "5.2h / 4.4 CSAT", "trend": "stable", "uptime": "Resolution Time", "lastSync": "CSAT Score"},
@@ -1683,7 +1683,7 @@ DASHBOARD_DATA:
     {"label": "Sarah Martinez", "value": "Available", "status": "success", "icon": "UserPlus", "change": "8 tickets", "trend": "stable", "uptime": "53% capacity", "lastSync": "Can take: 7"},
     {"label": "Mike Chen", "value": "Available", "status": "success", "icon": "UserPlus", "change": "11 tickets", "trend": "stable", "uptime": "73% capacity", "lastSync": "Can take: 4"},
     {"label": "Emma Wilson", "value": "Balanced", "status": "info", "icon": "Target", "change": "14 tickets", "trend": "stable", "uptime": "93% capacity", "lastSync": "Can take: 1"},
-    {"label": "Alex Rivera", "value": "Balanced", "status": "info", "icon": "CheckCircle2", "change": "15 tickets", "trend": "stable", "uptime": "100% capacity", "lastSync": "At capacity"},
+    {"label": "Christopher Hayes", "value": "Balanced", "status": "info", "icon": "CheckCircle2", "change": "15 tickets", "trend": "stable", "uptime": "100% capacity", "lastSync": "At capacity"},
     {"label": "Lisa Park", "value": "High Load", "status": "warning", "icon": "AlertTriangle", "change": "18 tickets", "trend": "up", "uptime": "120% capacity", "lastSync": "Reassign: 3"},
     {"label": "Recommendations", "value": "12 tickets", "status": "warning", "icon": "ArrowRight", "change": "To reassign", "trend": "stable", "uptime": "From: Tom, Lisa", "lastSync": "To: Sarah, Mike"},
     {"label": "Balance Impact", "value": "+18% CSAT", "status": "success", "icon": "TrendingUp", "change": "Projected", "trend": "up", "uptime": "After rebalance", "lastSync": "Estimated"}
@@ -1883,7 +1883,7 @@ DASHBOARD_DATA:
   "metrics": [
     {"label": "DESK-1847 (TechCorp)", "value": "45m", "status": "error", "icon": "AlertOctagon", "change": "Tom Wilson", "trend": "down", "timer": "45m to breach", "severity": "critical", "ticketId": "DESK-1847"},
     {"label": "DESK-1845 (Enterprise)", "value": "58m", "status": "error", "icon": "XCircle", "change": "Lisa Park", "trend": "down", "timer": "58m to breach", "severity": "critical", "ticketId": "DESK-1845"},
-    {"label": "DESK-1844 (CloudNine)", "value": "1h 15m", "status": "error", "icon": "AlertTriangle", "change": "Alex Rivera", "trend": "down", "timer": "1h 15m to breach", "severity": "critical", "ticketId": "DESK-1844"},
+    {"label": "DESK-1844 (CloudNine)", "value": "1h 15m", "status": "error", "icon": "AlertTriangle", "change": "Christopher Hayes", "trend": "down", "timer": "1h 15m to breach", "severity": "critical", "ticketId": "DESK-1844"},
     {"label": "Next 4 Hours", "value": "12 tickets", "status": "warning", "icon": "Clock", "change": "SLA risk", "trend": "up"},
     {"label": "Next 8 Hours", "value": "8 tickets", "status": "warning", "icon": "Timer", "change": "Watch list", "trend": "stable"},
     {"label": "Next 24 Hours", "value": "23 tickets", "status": "info", "icon": "Calendar", "change": "Total at risk", "trend": "stable"},

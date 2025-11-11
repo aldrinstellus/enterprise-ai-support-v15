@@ -4,7 +4,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import type { ZohoWebhookRequest } from '@/types/zoho';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

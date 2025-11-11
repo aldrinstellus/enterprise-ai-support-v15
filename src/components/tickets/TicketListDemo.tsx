@@ -72,6 +72,7 @@ export function TicketListDemo({
       const interval = setInterval(fetchTickets, refreshInterval);
       return () => clearInterval(interval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoRefresh, refreshInterval, limit]);
 
   const getPriorityColor = (priority: string) => {
